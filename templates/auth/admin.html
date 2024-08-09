@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- Load static files if needed -->
-
+{% load static %}
 <html lang="en">
 
 <head>
@@ -9,7 +9,7 @@
 
   <!-- Link to the custom CSS file -->
 
-  <link rel="stylesheet" href="../../static/admin/admin.css" />
+  <link rel="stylesheet" href="{% static 'admin/admin.css' %}" />
 
   <!-- Font Awesome CDN Link -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
@@ -21,11 +21,11 @@
   <div class="container">
     <nav>
       <ul>
-        <li><a href="path/to/admin-page" class="logo">
-            <img src="../../static/images/deerwalklogo.png" alt="">
+        <li><a href="" class="logo">
+            <img src="{% static "images/deerwalklogo.png" %}" alt="">
             <span class="nav-item">DashBoard</span>
           </a></li>
-        <li><a href="./admin.html">
+        <li><a href="">
             <i class="fas fa-home"></i>
             <span class="nav-item">Home</span>
           </a></li>
@@ -72,7 +72,7 @@
           <!-- Replace with actual image URL -->
           <!-- <img src="path/to/teacher_image.jpg" alt="Teacher Image"> -->
           <!-- Replace with teacher's first and last name -->
-          <h4>Teacher First Name Last Name</h4>
+          <h4>{{ example }}</h4>
           <h5>Address</h5><span>Teacher Address</span>
           <h5>DOB</h5><span>Teacher DOB</span>
         </div>
