@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.models import User
 from .forms import LoginForm
 
 # Create your views here.
@@ -25,6 +25,7 @@ from .forms import LoginForm
 def login_page(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
+
         print("Post Request Form")
         print(form)
 
@@ -44,10 +45,33 @@ def login_page(request):
             print(form.non_field_errors())
     else: 
         form = LoginForm()
+        print(f"Get Request Form")
+        print(form)
 
     print("Get Request Form")
 
-    return render(request, 'auth/login.html', {'form': form})      
+    return render(request, 'auth/login.html', {'form': form})   
 
 def admin_view(request):
     return render(request, 'auth/admin.html')
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
+
+def register_user(request):
+    if request.method == "POST":
+        print(request.POST)
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        pswd1 = request.POST.get('pswd1')
+        pswd2 = request.POST.get('pswd2')
+        if pswd1 == pswd2:
+            user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=pswd1)
+            user.save()
+        else:
+            messages.warning(request, 'Passwords do not match')
+        
+    return render(request, 'auth/registration.html')

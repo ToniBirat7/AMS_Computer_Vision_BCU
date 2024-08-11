@@ -16,5 +16,4 @@ class LoginForm(forms.Form):
     #         raise forms.ValidationError('Password Must Contain $')
     #     return pwd
     
-
-    
+   
