@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import LoginForm
+from .forms import LoginForm, UserRegistrationForm
 
 # Create your views here.
 # def login_page(request):
@@ -52,26 +53,32 @@ def login_page(request):
 
     return render(request, 'auth/login.html', {'form': form})   
 
+@login_required
 def admin_view(request):
     return render(request, 'auth/admin.html')
 
+@login_required
 def logout_user(request):
     logout(request)
     return redirect('login')
 
+@login_required
 def register_user(request):
-    if request.method == "POST":
-        print(request.POST)
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        pswd1 = request.POST.get('pswd1')
-        pswd2 = request.POST.get('pswd2')
-        if pswd1 == pswd2:
-            user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=pswd1)
-            user.save()
-        else:
-            messages.warning(request, 'Passwords do not match')
-        
-    return render(request, 'auth/registration.html')
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
+            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
+            pswd1 = form.cleaned_data.get('password1')
+            pswd2 = form.cleaned_data.get('password2')
+            if pswd1 == pswd2:
+                User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=pswd1)
+        else: 
+            print(form.errors)
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'auth/registration.html', {'form': form})
+

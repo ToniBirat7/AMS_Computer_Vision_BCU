@@ -8,11 +8,9 @@
 
 {% block body %}
 
-{% if messages %}
-    {% for message in messages %}
-        <h1 class="error-message"> {{ message }} </h1>
-    {% endfor %} 
-{% endif %}
+{% for message in messages %}
+<h1>{{message}}</h1>
+{% endfor %}
 
   <div class="body">
     <div class="containers">
@@ -23,27 +21,38 @@
             <div class="user-details">
               <div class="input-box">
                 <span class="details">First Name</span>
-                <input type="text" placeholder="Enter your first name" required name="first_name">
+                <!-- <input type="text" placeholder="Enter your first name" required name="first_name"> -->
+                 {{ form.first_name }}
+                 {{form.first_name.errors}}
               </div>
               <div class="input-box">
                 <span class="details">Last Name</span>
-                <input type="text" placeholder="Enter your last name" required name="last_name">
+                <!-- <input type="text" placeholder="Enter your last name" required name="last_name"> -->
+                {{ form.last_name }}
+                {{form.last_name.errors}}
               </div>
               <div class="input-box">
                 <span class="details">Username</span>
-                <input type="text" placeholder="Enter your username" required name="username">
+                <!-- <input type="text" placeholder="Enter your username" required name="username"> -->
+                {{ form.username }}
+                {{form.username.errors}}
               </div>
               <div class="input-box">
                 <span class="details">Email</span>
-                <input type="email" placeholder="Enter your email" required name="email">
+                <!-- <input type="email" placeholder="Enter your email" required name="email"> -->
+                {{ form.email }}
+                {{form.email.errors}}
               </div>
               <div class="input-box">
                 <span class="details">Password</span>
-                <input type="password" placeholder="Enter your password" required name="pswd1">
+                <!-- <input type="password" placeholder="Enter your password" required name="pswd1"> -->
+                {{ form.password1 }}
+                {{form.password1.errors}} 
               </div>
               <div class="input-box">
                 <span class="details">Confirm Password</span>
-                <input type="password" placeholder="Confirm your password" required name="pswd2">
+                <!-- <input type="password" placeholder="Confirm your password" required name="pswd2"> -->
+                {{ form.password2 }}
               </div>
             </div>
             <div class="button">
@@ -77,7 +86,7 @@ function removeToast(el) {
     }, 500); // delay should match the transition duration
 }
 </script>
-</div>
 
+</div>
 
 {% endblock %}
