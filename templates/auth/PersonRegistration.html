@@ -1,4 +1,3 @@
-
 <div class="body">
     <div class="containers">
         <div class="title">Teacher Details</div>
@@ -52,21 +51,6 @@
       </form>
         </div>
     </div>
-
-    
-        <div class="toast" id="toast{{ forloop.counter }}">
-          <div class="toast-content">
-              <i class="fas fa-solid fa-check check"></i>
-              <div class="message">
-                  <!-- <span class="text text-1">Success!</span> -->
-                  <span class="text text-2"></span>
-              </div>
-          </div>
-          <!-- <i class="fa-solid fa-xmark close"></i> -->
-          <i class="fas fa-times close" id="close{{ forloop.counter }}"></i>
-          <div class="progress"></div>
-      </div>
-
 
 <script>
 {% for message in messages %}
@@ -280,5 +264,3 @@ form .user-details .input-box{
 }
 
 </style>
-
-{% endblock body %}

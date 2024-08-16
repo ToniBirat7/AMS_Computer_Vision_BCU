@@ -57,7 +57,16 @@ class UserRegistrationForm(forms.Form):
             raise forms.ValidationError('Password must contain at least 1 special character')
         
         return pwd1
+    
+    def clean(self):
+        data = super().clean()
+        pswd1 = data.get('password1')
+        pswd2 = data.get('password2')
 
+        if  pswd1 != pswd2:
+            raise forms.ValidationError('The Passwords do not match')
+        
+        return data
     
 
         

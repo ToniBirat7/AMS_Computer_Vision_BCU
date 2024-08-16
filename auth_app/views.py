@@ -24,11 +24,12 @@ from .forms import LoginForm, UserRegistrationForm
 #     return render(request, 'auth/login.html')
 
 def login_page(request):
+    next = request.GET.get('next')
     if request.method == 'POST':
         form = LoginForm(request.POST)
 
         print("Post Request Form")
-        print(form)
+        # print(form)
 
         if form.is_valid():
             print(form.cleaned_data)
@@ -38,18 +39,15 @@ def login_page(request):
             if user is not None:
                 print("User is authenticated")
                 login(request, user)
-                return redirect('admin-page-name')
+                return redirect(next if next else 'admin-page-name')
             else:
                 print("User is not authenticated")
         else:
             print("Form is invalid")
-            print(form.non_field_errors())
     else: 
         form = LoginForm()
         print(f"Get Request Form")
-        print(form)
-
-    print("Get Request Form")
+        # print(form)
 
     return render(request, 'auth/login.html', {'form': form})   
 
@@ -64,6 +62,7 @@ def logout_user(request):
 
 @login_required
 def register_user(request):
+    print("Register User")
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
@@ -74,11 +73,17 @@ def register_user(request):
             email = form.cleaned_data.get('email')
             pswd1 = form.cleaned_data.get('password1')
             pswd2 = form.cleaned_data.get('password2')
-            if pswd1 == pswd2:
-                User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=pswd1)
+
+            if User.objects.filter(username=username).exists():
+                messages.warning(request, 'Username already exists')
+                print("Username already exists")
+                return redirect('register')
+
+            User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=pswd1)
+            messages.success(request, 'User Registered Successfully')
         else: 
             print(form.errors)
+            print(form.non_field_errors())
     else:
         form = UserRegistrationForm()
     return render(request, 'auth/registration.html', {'form': form})
-
