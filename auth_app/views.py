@@ -39,7 +39,10 @@ def login_page(request):
             if user is not None:
                 print("User is authenticated")
                 login(request, user)
-                return redirect(next if next else 'admin-page-name')
+                if user.is_superuser:
+                    return redirect('admin-page-name')
+                # return redirect(next if next else 'admin-page-name')
+                print("Not Admin")
             else:
                 print("User is not authenticated")
         else:
@@ -87,3 +90,8 @@ def register_user(request):
     else:
         form = UserRegistrationForm()
     return render(request, 'auth/registration.html', {'form': form})
+
+def person(request):
+    user_list = User.objects.exclude(is_superuser=True)
+    print(user_list)
+    return render(request, 'auth/PersonRegistration.html', {'teachers': user_list})

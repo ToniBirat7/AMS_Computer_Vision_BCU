@@ -1,5 +1,6 @@
 from django import forms
 import re
+from django.contrib.auth.models import User
 
 class LoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class' : 'input', 'maxlength' : '100', 'placeholder' : 'Enter Username'}))
@@ -67,6 +68,3 @@ class UserRegistrationForm(forms.Form):
             raise forms.ValidationError('The Passwords do not match')
         
         return data
-    
-
-        
