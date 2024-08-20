@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import LoginForm, UserRegistrationForm
+from .forms import LoginForm, UserRegistrationForm, TeacherForm
 
 # Create your views here.
 # def login_page(request):
@@ -91,7 +91,24 @@ def register_user(request):
         form = UserRegistrationForm()
     return render(request, 'auth/registration.html', {'form': form})
 
-def person(request):
+@login_required
+def teacher(request):
     user_list = User.objects.exclude(is_superuser=True)
     print(user_list)
-    return render(request, 'auth/PersonRegistration.html', {'teachers': user_list})
+    form = TeacherForm()
+    print(form)
+    if request.method == 'POST':
+        print(request.POST)
+        print(request.FILES)
+        form = TeacherForm(request.POST, request.FILES)
+        if form.is_valid():
+            print("Cleaned Data")
+            print("*************")
+            print(form.cleaned_data)
+            print(form)
+            print(form.cleaned_data.get('my_image').content_type)
+        else: 
+            print("Form is Invalid")
+            print(request.FILES.get('my_image').content_type)
+            print(form.errors)
+    return render(request, 'auth/PersonRegistration.html', {'teachers': user_list, 'form': form})

@@ -67,4 +67,24 @@ class UserRegistrationForm(forms.Form):
         if  pswd1 != pswd2:
             raise forms.ValidationError('The Passwords do not match')
         
-        return data
+        return data 
+
+class TeacherForm(forms.Form):
+    teacher = forms.ModelChoiceField(queryset=User.objects.exclude(is_superuser=True), widget=forms.Select(attrs={'class' : 'custom-class'})) 
+    address = forms.CharField(widget=forms.TextInput(attrs={'placeholder' : 'Enter Address'}))
+    primary_number = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Enter your number','maxlength': '10','minlength': '10'}))
+    secondary_number = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Enter your number','maxlength': '10','minlength': '10'}))
+    dob = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    sex = forms.ChoiceField(choices=[('M','Male'),('F','Female')],widget=forms.Select(attrs={'class' : 'custom-class'}))
+    my_image = forms.ImageField(widget=forms.FileInput(attrs={'class' : 'custom-file-upload', 'style' : 'display:none'}))
+
+    def clean_my_image(self):
+        img = self.cleaned_data.get('my_image')
+        if img.size > 1024*1024:
+            raise forms.ValidationError('Image size should be less than 1MB')
+        
+        valid_content_types = ['image/jpeg', 'image/png']
+        if img.content_type not in valid_content_types:
+            raise forms.ValidationError('Image should be in jpg or png format')
+        
+        return img

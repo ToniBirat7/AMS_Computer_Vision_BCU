@@ -12,42 +12,50 @@
     <div class="containers">
         <div class="title">Teacher Details</div>
         <div class="content">
-      <form  method="POST">
+      <form  method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
         <div class="user-details">
           <div class="input-box">
             <label for="teacher">Teacher:</label>
             <!-- <input type="text" placeholder="Enter your first name" required name="first_name"> -->
-            <select name="teacher" id="teacher" class="custom-class" required>
-              {% for teacher in teachers %}
-                <option value="">{{teacher.username}}</option>
-              {% endfor %}
-            </select>
+
+           {{ form.teacher }}
+
           </div>
           <div class="input-box">
             <span class="details">Address</span>
-            <input type="text" placeholder="Enter your address" required name="address">
+            {{ form.address }}
           </div>
           <div class="input-box">
             <span class="details">Primary Number</span>
-            <input type="text" placeholder="Enter your number" required name="primary_number" maxlength="10" minlength="10">
+            {{ form.primary_number }}
           </div>
           <div class="input-box">
             <span class="details">Secondary Number</span>
-            <input type="text" placeholder="Enter your number" required name="secondary_number" maxlength="10" minlength="10">
+            {{ form.secondary_number }}
           </div>
           <div class="input-box">
             <label for="dob">
                 <!-- <span class="details">Date Of Birth</span> -->
                 Date Of Birth:
             </label>
-            <input type="date" placeholder="Enter your password" id="dob" required name="DOB">
+            {{ form.dob }}
           </div>
           <div class="input-box">
-            <label for="id_sex">Gender</label> <select name="sex" class="custom-class" required id="id_sex">
-                <option value="M" selected>Male</option>
-                <option value="F">Female</option>
-              </select>
+            <label for="id_sex">Gender</label> 
+            {{ form.sex }}
           </div>
+
+          <!-- Image Field -->
+
+          <div class="input-box">
+            <div class="img">
+              <label for="id_my_image" class="custom-file-upload">Upload Image</label>
+              {{ form.my_image }}
+              {{ form.my_image.errors }}
+            </div>
+          </div>
+          
         </div>
         <div class="button">
           <input type="submit" value="Submit">
