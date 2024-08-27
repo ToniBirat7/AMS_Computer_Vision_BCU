@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import LoginForm, UserRegistrationForm, TeacherForm
-from .models import Teacher
+from .forms import LoginForm, UserRegistrationForm, TeacherForm, StudentForm
+from .models import Teacher, Student
 
 # Create your views here.
 # def login_page(request):
@@ -114,15 +114,21 @@ def teacher(request):
             sex = form.cleaned_data['sex']
             my_image = form.cleaned_data['my_image']
 
-            Teacher.objects.create(user=user,
-                                   address=address, 
-                                   dob=dob, 
-                                   primary_number=primary_number, 
-                                   secondary_number=secondary_number,
-                                   sex=sex,
-                                   image=my_image)
-            
-            print("User Created Successfully")
+            if Teacher.objects.filter(user=user).exists():
+                print("User already exists")
+                form.add_error('teacher', f'User with {user.username} already exists')
+            else:
+                try:
+                    Teacher.objects.create(user=user,
+                                        address=address, 
+                                        dob=dob, 
+                                        primary_number=primary_number, 
+                                        secondary_number=secondary_number,
+                                        sex=sex,
+                                        image=my_image)
+                    messages.success(request, 'Teacher Created Successfully')
+                except Exception as e:
+                    print("Error in Creating User")
         else:   
             print("Form is Invalid")
             print(form.errors)
@@ -134,3 +140,21 @@ def teacher_image(request):
     for item in teacher:
         print(item.image)
     return render(request, 'auth/teacher_image.html', {'teachers': teacher})
+
+def add_student(request):
+    print(request.POST)
+    if request.method == 'POST':
+        form = StudentForm(request.POST)    
+        print("Post Request")
+        print(form)
+        if form.is_valid():
+            print(form.cleaned_data)
+            form.save()
+            messages.success(request, 'Student Added Successfully')
+        else:
+            print(form.errors)
+    else: 
+        form = StudentForm()
+        print("Get Request")
+        print(form)
+    return render(request, 'auth/addstudent.html', {'form': form})

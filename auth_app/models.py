@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MinLengthValidator
-# Create your models here.
+from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator
 
 Gender = [
     ('M', 'Male'),
@@ -30,3 +29,20 @@ class Teacher(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['primary_number','secondary_number'], name='unique_primary_number')
         ] 
+
+class Student(models.Model):
+    name = models.CharField(max_length=30)
+    address = models.CharField(max_length=30)
+    age = models.PositiveIntegerField(validators=[
+        MinValueValidator(20),
+        MaxValueValidator(30)
+    ])
+    phone_number = models.CharField(max_length=10, validators=[MinLengthValidator(10)],unique=True)
+
+    class Meta:
+        verbose_name = 'Student'
+        db_table = 'student'
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
