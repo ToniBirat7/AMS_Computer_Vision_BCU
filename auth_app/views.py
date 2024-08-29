@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import LoginForm, UserRegistrationForm, TeacherForm, StudentForm
+from .forms import LoginForm, UserRegistrationForm, TeacherForm, StudentForm, CourseForm
 from .models import Teacher, Student
 
 # Create your views here.
@@ -57,7 +57,8 @@ def login_page(request):
 
 @login_required
 def admin_view(request):
-    return render(request, 'auth/admin.html')
+    teachers = Teacher.objects.prefetch_related('user').all()
+    return render(request, 'auth/admin.html', {'teachers': teachers})
 
 @login_required
 def logout_user(request):
@@ -158,3 +159,10 @@ def add_student(request):
         print("Get Request")
         print(form)
     return render(request, 'auth/addstudent.html', {'form': form})
+
+def add_course(request):
+    teachers = Teacher.objects.prefetch_related('user').all()
+    form  = CourseForm()
+    form.fields['teacher'].choices = [(teacher.id, f'{teacher.user.first_name} {teacher.user.last_name}') for teacher in teachers]
+    print(form)
+    return render(request, 'auth/addcourse.html', {'form': form})

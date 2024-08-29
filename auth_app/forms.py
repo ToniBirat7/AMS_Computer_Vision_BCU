@@ -1,7 +1,7 @@
 from django import forms
 import re
 from django.contrib.auth.models import User
-from .models import Student
+from .models import Student, Teacher
 
 class LoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class' : 'input', 'maxlength' : '100', 'placeholder' : 'Enter Username'}))
@@ -118,4 +118,9 @@ class StudentForm(forms.ModelForm):
         if not address.isalpha():
             raise forms.ValidationError('Address should contain only alphabets')
         return address
-    
+
+class CourseForm(forms.Form):
+    teacher = forms.ModelChoiceField(queryset=Teacher.objects.all(), widget=forms.Select(attrs={'class' : 'custom-class'}))
+    title = forms.CharField(widget=forms.TextInput(attrs={'placeholder' : 'Enter Title'}),max_length=100)
+    duration = forms.CharField(widget=forms.TextInput(attrs={'placeholder' : 'Enter Duration'}),max_length=10)
+    shift = forms.ChoiceField(choices=[('M','Morning'),('D','Day')],widget=forms.Select(attrs={'class' : 'custom-class'}))

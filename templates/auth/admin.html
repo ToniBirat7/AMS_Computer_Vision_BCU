@@ -41,7 +41,7 @@
             <i class="fas fa-user-tie"></i>
             <span class="nav-item">Add Teacher</span>
           </a></li>
-        <li><a href="./addcourse.html">
+        <li><a href="{% url 'add-course' %}">
             <i class="fas fa-plus"></i>
             <span class="nav-item">Add Course</span>
           </a></li>
@@ -72,15 +72,17 @@
 
       <div class="main-skills">
         <!-- Loop through the list of teachers -->
-
+        {% for item in teachers %}
         <div class="card">
           <!-- Replace with actual image URL -->
-          <!-- <img src="path/to/teacher_image.jpg" alt="Teacher Image"> -->
+          <img src="{{item.image.url}}" alt="Teacher Image">
           <!-- Replace with teacher's first and last name -->
-          <h4>{{ example }}</h4>
-          <h5>Address</h5><span>Teacher Address</span>
-          <h5>DOB</h5><span>Teacher DOB</span>
+          <h4>{{item.user.first_name}} {{item.user.last_name}}</h4>
+          <h5>Address</h5><span>{{item.address}}</span>
+          <h5>DOB</h5><span>{{item.dob}}</span>
         </div>
+        {% endfor %}
+
 
         <!-- End For -->
       </div>
@@ -101,7 +103,6 @@
             </thead>
             <tbody>
               <!-- Loop through the list of students -->
-
               <tr>
                 <td>Student ID</td>
                 <td>Student Name</td>
