@@ -30,6 +30,7 @@
           <div class="input-box">
             <span class="details">Duration</span>
             {{ form.duration }}
+            {{ form.duration.errors}}
           </div>
           <div class="input-box">
             <label for="id_sex">Shift</label>
@@ -42,6 +43,23 @@
       </form>
         </div>
     </div>
+
+{% if messages %}
+
+{% for message in messages %}
+<div class="toast" id="toast{{ forloop.counter }}">
+  <div class="toast-content">
+    <i class="fas fa-solid fa-check check"></i>
+    <div class="message">
+      <!-- <span class="text text-1">Success!</span> -->
+      <span class="text text-2">{{message}}</span>
+    </div>
+  </div>
+  <!-- <i class="fa-solid fa-xmark close"></i> -->
+  <i class="fas fa-times close" id="close{{ forloop.counter }}"></i>
+  <div class="progress"></div>
+</div>
+{%endfor%}
 
 <script>
 {% for message in messages %}
@@ -67,6 +85,8 @@ function removeToast(el) {
     }, 500); // delay should match the transition duration
 }
 </script>
+  
+{% endif %}
 </div>
 
 {% endblock %}

@@ -7,6 +7,11 @@ Gender = [
     ('F', 'Female')
 ]
 
+shift_choice = [
+    ('M', 'Morning'),
+    ('D', 'Day')
+]
+
 def file_upload(self, filename):
     return f'{self.user.username}_{filename}'
 
@@ -22,7 +27,7 @@ class Teacher(models.Model):
     def __str__(self):
         return self.user.username
     
-    class Meta:
+    class Meta: 
         db_table = 'teacher'
         ordering = ['user']
         verbose_name = 'Teacher'
@@ -46,3 +51,21 @@ class Student(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Course(models.Model):
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    duration = models.CharField(max_length=20)
+    shift = models.CharField(max_length=1, choices=shift_choice)
+    title = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'course'
+        ordering = ['title']
+
+class StudentClass(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+

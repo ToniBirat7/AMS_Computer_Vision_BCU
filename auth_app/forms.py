@@ -1,7 +1,7 @@
 from django import forms
 import re
 from django.contrib.auth.models import User
-from .models import Student, Teacher
+from .models import Student, Teacher, Course
 
 class LoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class' : 'input', 'maxlength' : '100', 'placeholder' : 'Enter Username'}))
@@ -119,8 +119,38 @@ class StudentForm(forms.ModelForm):
             raise forms.ValidationError('Address should contain only alphabets')
         return address
 
-class CourseForm(forms.Form):
-    teacher = forms.ModelChoiceField(queryset=Teacher.objects.all(), widget=forms.Select(attrs={'class' : 'custom-class'}))
-    title = forms.CharField(widget=forms.TextInput(attrs={'placeholder' : 'Enter Title'}),max_length=100)
-    duration = forms.CharField(widget=forms.TextInput(attrs={'placeholder' : 'Enter Duration'}),max_length=10)
-    shift = forms.ChoiceField(choices=[('M','Morning'),('D','Day')],widget=forms.Select(attrs={'class' : 'custom-class'}))
+class CourseForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = [
+            'teacher',
+            'title',
+            'duration',
+            'shift'
+        ]
+        widgets = {
+            'teacher' : forms.Select(attrs={'class' : 'custom-class'}),
+            'title' : forms.TextInput(attrs={'placeholder' : 'Enter Title'}),
+            'duration' : forms.TextInput(attrs={'placeholder' : 'Enter Duration'}),
+            'shift' : forms.Select(attrs={'class' : 'custom-class'})
+        }
+    
+    def clean_duration(self):
+        duration = self.cleaned_data.get('duration')
+        if not duration.isdigit():
+            raise forms.ValidationError('Duration should be a number')
+        if int(duration) < 0:
+            raise forms.ValidationError('Duration should be a positive number')
+        return duration
+
+
+class StudentClassForm(forms.Form):
+    student = forms.ModelMultipleChoiceField(
+        queryset=Student.objects.all(),
+        widget = forms.SelectMultiple(attrs={'class' : 'custom-class select2-multiple'})
+    )
+    course = forms.ModelChoiceField(
+        queryset=Course.objects.all(),
+        widget = forms.Select(attrs={'class' : 'custom-class'})
+    )
+
