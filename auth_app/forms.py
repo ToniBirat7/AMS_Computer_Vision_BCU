@@ -154,3 +154,4 @@ class StudentClassForm(forms.Form):
         widget = forms.Select(attrs={'class' : 'custom-class'})
     )
 
+

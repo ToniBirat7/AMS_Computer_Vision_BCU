@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .forms import LoginForm, UserRegistrationForm, TeacherForm, StudentForm, CourseForm, StudentClassForm
 from .models import Teacher, Student, Course, StudentClass
+
 # Create your views here.
 # def login_page(request):
 #     if request.method == 'POST':
@@ -42,7 +43,9 @@ def login_page(request):
                 if user.is_superuser:
                     return redirect('admin-page-name')
                 # return redirect(next if next else 'admin-page-name')
-                print("Not Admin")
+                else: 
+                    print("Not Admin")
+                    return redirect('course-list')
             else:
                 print("User is not authenticated")
         else:
@@ -79,12 +82,11 @@ def register_user(request):
             pswd2 = form.cleaned_data.get('password2')
 
             if User.objects.filter(username=username).exists():
-                messages.warning(request, 'Username already exists')
+                form.add_error('username', f'Username with {username} already exists')
                 print("Username already exists")
-                return redirect('register')
-
-            User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=pswd1)
-            messages.success(request, 'User Registered Successfully')
+            else:
+                User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=pswd1)
+                messages.success(request, 'User Registered Successfully')
         else: 
             print(form.errors)
             print(form.non_field_errors())
