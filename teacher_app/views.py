@@ -2,6 +2,8 @@ from django.shortcuts import render
 from auth_app.models import Teacher, Course
 from django.shortcuts import redirect
 from .forms import ImageForm
+from auth_app.models import StudentClass
+from django.contrib import messages
 
 import os 
 from django.conf import settings
@@ -9,7 +11,7 @@ from django.core.files.storage import default_storage
 
 # Create your views here.
 
-def course_list(request):
+def   course_list(request):
     print("Course List")
     print(request.user.id)
     user_id = request.user.id

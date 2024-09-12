@@ -69,3 +69,8 @@ class StudentClass(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.student.name
+
+    class Meta:
+        db_table = 'student_class'
