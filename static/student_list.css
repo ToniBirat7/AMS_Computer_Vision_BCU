@@ -134,7 +134,7 @@ table{
 .toast {
     position: absolute;
     top: 90px;
-    left: 53%;
+    left: 57%;
     border-radius: 12px;
     background: #fff;
     padding: 20px 35px 20px 25px;
@@ -152,10 +152,6 @@ table{
 .toast .toast-content {
     display: flex;
     align-items: center;
-}
-
-.toast {
-    transition: opacity 0.5s, height 0.5s, margin 0.5s, padding 0.5s;
 }
 
 .toast-content .check {
@@ -179,7 +175,6 @@ table{
 .message .text {
     font-size: 20px;
     font-weight: 400;
-    ;
     color: #666666;
 }
 

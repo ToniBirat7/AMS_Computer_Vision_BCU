@@ -9,7 +9,7 @@
 {% load static %}
 
 {% block link %}
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 <link rel="stylesheet" href="{% static 'course.css' %}">
 
 {% endblock %}
@@ -25,6 +25,45 @@
 <!-- Block for the body content -->
 
 {% block body %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="toast" id="toast1">
+  <div class="toast-content">
+    <i class="fas fa-solid fa-check check"></i>
+    <div class="message">
+      <span class="text text-2">{{message}}</span>
+    </div>
+  </div>
+  <i class="fas fa-times close" id="close1"></i>
+  <div class="progress"></div>
+</div>
+{% endfor %}
+
+<script>
+  /* JavaScript for managing toast notifications */
+  var toast1 = document.getElementById('toast1');
+  var close1 = document.getElementById('close1');
+
+  close1.addEventListener('click', function () {
+    removeToast(toast1);
+  });
+
+  setTimeout(function () {
+    removeToast(toast1);
+  }, 3000);
+
+  function removeToast(el) {
+    el.style.opacity = '0';
+    el.style.height = '0';
+    el.style.margin = '0';
+    el.style.padding = '0';
+    setTimeout(function () {
+      el.remove();
+    }, 500); // delay should match the transition duration
+  }
+</script>
+{% endif %}
 
 <div class="center">
   <h1 class="h1">Courses Taught</h1>
@@ -48,7 +87,7 @@
 
       <div class="button2">
         <!-- Link to take attendance (update with actual URL) -->
-        <a href="{% url 'calender' course.id %}"><button class="calendar">Take Attendance</button></a>
+        <a href="{% url 'calendar' course.id %}"><button class="calendar">Take Attendance</button></a>
 
         <!-- Link to download report (update with actual URL) -->
         <a href="path/to/download-report"><button class="cal-report">Report</button></a>

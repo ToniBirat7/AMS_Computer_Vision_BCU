@@ -12,6 +12,11 @@ shift_choice = [
     ('D', 'Day')
 ]
 
+status_choice = [
+    ('P', 'Present'),
+    ('A', 'Absent')
+]
+
 def file_upload(self, filename):
     return f'{self.user.username}_{filename}'
 
@@ -74,3 +79,15 @@ class StudentClass(models.Model):
 
     class Meta:
         db_table = 'student_class'
+
+class Attendance(models.Model):
+    today_date = models.DateField(null=False, blank=False)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    stats = models.CharField(max_length=1, choices=status_choice)
+
+    def __str__(self):
+        return self.student.name
+    
+    class Meta:
+        db_table = 'attendance'
