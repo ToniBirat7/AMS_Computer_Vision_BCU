@@ -1,151 +1,262 @@
-<!DOCTYPE html>
-<!-- Load static files if needed -->
 {% load static %}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AMS | Dashboard</title>
-
-  <!-- Link to the custom CSS file -->
-
-  <link rel="stylesheet" href="{% static 'admin/admin.css' %}" />
-
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Icons -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'admin/admin.css' %}">
   <!-- Font Awesome CDN Link -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-
   {% block links %}
-  
+
   {% endblock %}
 
   <!-- Block for additional links if needed -->
 </head>
 
 <body>
-  <div class="container">
-    <nav>
-      <ul>
-        <li><a href="{% url 'admin-page-name' %}" class="logo">
-            <img src="{% static "images/deerwalklogo.png" %}" alt="">
-            <span class="nav-item">DashBoard</span>
-          </a></li>
-        <li><a href="{% url 'admin-page-name' %}">
-            <i class="fas fa-home"></i>
-            <span class="nav-item">Home</span>
-          </a></li>
-        <li><a href="{% url 'register' %}">
-            <i class="fas fa-user-plus"></i>
-            <span class="nav-item">User Registration</span>
-          </a></li>
-        <li><a href="{% url 'teacher' %}">
-            <i class="fas fa-user-tie"></i>
-            <span class="nav-item">Add Teacher</span>
-          </a></li>
-        <li><a href="{% url 'add-course' %}">
-            <i class="fas fa-plus"></i>
-            <span class="nav-item">Add Course</span>
-          </a></li>
-        <li><a href="{% url 'add-student' %}">
-            <i class="fas fa-user-graduate"></i>
-            <span class="nav-item">Add Student</span>
-          </a></li>
-        <li><a href="{% url 'add-student-class' %}">
-            <i class="fas fa-book-reader"></i>
-            <span class="nav-item">Add Student Class</span>
-          </a></li>
-        <li><a href="{% url 'logout' %}" class="logout">
-            <i class="fas fa-sign-out-alt"></i>
-            <span class="nav-item">Log out</span>
-          </a></li>
-      </ul>
-    </nav>
-
-    <!-- Block for the main body content -->
-
-    {% block body %}
-
-    <section class="main">
-      <div class="main-top">
-        <h1>Teachers</h1>
-        <i class="fas fa-user-cog"></i>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <button class="sidebar-toggle">
+        <i class='bx bx-menu'></i>
+      </button>
+      <div class="sidebar-header">
+        <img src="{% static 'images/islington_logo.png' %}" alt="Islington College" class="logo">
+        <h2>AMS Dashboard</h2>
       </div>
-
-      <div class="main-skills">
-        <!-- Loop through the list of teachers -->
-        {% for item in teachers %}
-        <div class="card">
-          <!-- Replace with actual image URL -->
-          <img src="{{item.image.url}}" alt="Teacher Image">
-          <!-- Replace with teacher's first and last name -->
-          <h4>{{item.user.first_name}} {{item.user.last_name}}</h4>
-          <h5>Address</h5><span>{{item.address}}</span>
-          <h5>DOB</h5><span>{{item.dob}}</span>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <h3>Main Menu</h3>
+          <ul>
+            <li class="active">
+              <a href="{% url 'admin-page-name' %}">
+                <i class='bx bxs-dashboard'></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'register' %}">
+                <i class='bx bx-user-plus'></i>
+                <span>User Registration</span>
+              </a>
+            </li>
+          </ul>
         </div>
-        {% endfor %}
 
+        <div class="nav-section">
+          <h3>Management</h3>
+          <ul>
+            <li>
+              <a href="{% url 'teacher' %}">
+                <i class='bx bx-user'></i>
+                <span>Teachers</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'add-student' %}">
+                <i class='bx bx-user-voice'></i>
+                <span>Students</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'add-course' %}">
+                <i class='bx bx-book-alt'></i>
+                <span>Courses</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'add-student-class' %}">
+                <i class='bx bx-chalkboard'></i>
+                <span>Classes</span>
+              </a>
+            </li>
+          </ul>
+        </div>
 
-        <!-- End For -->
+        <div class="nav-section">
+          <h3>Account</h3>
+          <ul>
+            <li>
+              <a href="{% url 'logout' %}" class="logout-btn">
+                <i class='bx bx-log-out'></i>
+                <span>Logout</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="content-header">
+        <div class="header-title">
+          <h1>Welcome Back, Admin</h1>
+          <p>Here's what's happening today</p>
+        </div>
+        <div class="header-actions">
+          <div class="search-box">
+            <i class='bx bx-search'></i>
+            <input type="text" placeholder="Search...">
+          </div>
+        </div>
+      </header>
+
+      <!-- Stats Overview -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon teacher">
+            <i class='bx bxs-user-detail'></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ teacher_count }}</h3>
+            <p>Total Teachers</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon student">
+            <i class='bx bxs-graduation'></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ student_count }}</h3>
+            <p>Total Students</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon course">
+            <i class='bx bxs-book-open'></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ course_count }}</h3>
+            <p>Active Courses</p>
+          </div>
+        </div>
       </div>
 
-      <section class="attendance">
-        <h1>Student List</h1>
-        <div class="attendance-list">
-          <table class="table">
+      <!-- Teachers Section -->
+      <section class="data-section">
+        <div class="section-header">
+          <h2>Teachers</h2>
+          <a href="{% url 'teacher' %}" class="add-btn">
+            <i class='bx bx-plus'></i>
+            Add Teacher
+          </a>
+        </div>
+        <div class="cards-grid">
+          {% for teacher in teachers %}
+          <div class="teacher-card">
+            <div class="card-header">
+              {% if teacher.image %}
+              <img src="{{ teacher.image.url }}" alt="{{ teacher.user.get_full_name }}" class="teacher-image">
+              {% else %}
+              <div class="placeholder-image">
+                <i class='bx bxs-user'></i>
+              </div>
+              {% endif %}
+            </div>
+            <div class="card-body">
+              <h3>{{ teacher.user.first_name }} {{ teacher.user.last_name }}</h3>
+              <div class="info-item">
+                <i class='bx bx-map'></i>
+                <span>{{ teacher.address }}</span>
+              </div>
+              <div class="info-item">
+                <i class='bx bx-phone'></i>
+                <span>{{ teacher.primary_number }}</span>
+              </div>
+              <div class="info-item">
+                <i class='bx bx-calendar'></i>
+                <span>{{ teacher.dob|date:"M d, Y" }}</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Students Section -->
+      <section class="data-section">
+        <div class="section-header">
+          <h2>Recent Students</h2>
+          <a href="{% url 'add-student' %}" class="add-btn">
+            <i class='bx bx-plus'></i>
+            Add Student
+          </a>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Age</th>
                 <th>Address</th>
-                <th>Phone Number</th>
-                <th>Enrolled Date</th>
+                <th>Phone</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <!-- Loop through the list of students -->
+              {% for student in students %}
               <tr>
-                <td>Student ID</td>
-                <td>Student Name</td>
-                <td>Student Age</td>
-                <td>Student Address</td>
-                <td>Student Phone Number</td>
-                <td>Enrolled Date</td>
+                <td>#{{ student.id }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.age }}</td>
+                <td>{{ student.address }}</td>
+                <td>{{ student.phone_number }}</td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="edit-btn" title="Edit">
+                      <i class='bx bx-edit-alt'></i>
+                    </button>
+                    <button class="delete-btn" title="Delete">
+                      <i class='bx bx-trash'></i>
+                    </button>
+                  </div>
+                </td>
               </tr>
-              <!-- End For -->
+              {% endfor %}
             </tbody>
           </table>
         </div>
       </section>
 
-      <section class="main-course">
-        <h1>Upcoming Courses</h1>
-        <div class="course-box">
-          <div class="course">
-            <div class="box">
-              <h3>HTML</h3>
-              <br>
-              <h5>Full Course on HTML from Scratch</h5>
-              <i class="fab fa-html5 html"></i>
-            </div>
-            <div class="box">
-              <h3>CSS</h3>
-              <h5>Full Course on CSS from Scratch</h5>
-              <i class="fab fa-css3-alt css"></i>
-            </div>
-            <div class="box">
-              <h3>JavaScript</h3>
-              <h5>Full Course on JavaScript from Scratch</h5>
-              <i class="fab fa-js-square js"></i>
+      <!-- Courses Section -->
+      <section class="data-section">
+        <div class="section-header">
+          <h2>Active Courses</h2>
+          <a href="{% url 'add-course' %}" class="add-btn">
+            <i class='bx bx-plus'></i>
+            Add Course
+          </a>
+        </div>
+        <div class="course-grid">
+          {% for course in courses %}
+          <div class="course-card">
+            <div class="course-info">
+              <h3>{{ course.title }}</h3>
+              <p>Teacher: {{ course.teacher.user.get_full_name }}</p>
+              <p>Duration: {{ course.duration }}</p>
+              <p>Shift: {{ course.get_shift_display }}</p>
             </div>
           </div>
+          {% endfor %}
         </div>
       </section>
-
-    </section>
-    <!-- End Body -->
-       
-    {% endblock %}
+    </main>
   </div>
+  <!-- Add JavaScript -->
+  <script src="{% static 'admin/admin.js' %}"></script>
 </body>
 
 </html>

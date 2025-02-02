@@ -4,6 +4,8 @@ from django.shortcuts import redirect
 from .forms import ImageForm, TeacherEditForm
 from auth_app.models import StudentClass, Attendance
 from django.contrib import messages
+import openpyxl
+from django.http import HttpResponse
 
 import os 
 from django.conf import settings
@@ -21,6 +23,44 @@ def course_list(request):
     list_of_courses = Course.objects.filter(teacher=teacher).prefetch_related('teacher')
     print(list_of_courses)
     return render(request, 'attendance/course_list.html',{'courses':list_of_courses})
+
+def download_report(request, course_id):
+    try:
+        # Fetch the course
+        course = Course.objects.get(id=course_id)
+
+        # Fetch attendance records for the course
+        attendance_records = Attendance.objects.filter(course=course)
+
+        # Create a new Excel workbook
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = f"Attendance Report for {course.title}"
+
+        # Set headers for the Excel sheet
+        headers = ['Date', 'Student Name', 'Status']
+        ws.append(headers)
+
+        # Add data rows
+        for record in attendance_records:
+            ws.append([
+                record.today_date.strftime('%Y-%m-%d'),
+                record.student.name,
+                'Present' if record.stats == 'P' else 'Absent'
+            ])
+
+        # Prepare the response with the Excel file
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = f'attachment; filename=attendance_{course.title}.xlsx'
+
+        # Save workbook to the response
+        wb.save(response)
+        return response
+
+    except Course.DoesNotExist:
+        return HttpResponse("Course not found.", status=404)
 
 def profile(request):
     user_id = request.user.id
@@ -67,6 +107,7 @@ def edit_profile(request):
         if form.is_valid():
             print("Form is Saved")
             form.save()
+            messages.success(request,'Profile Updated Successfully')
         else: 
             print(form.errors)
 

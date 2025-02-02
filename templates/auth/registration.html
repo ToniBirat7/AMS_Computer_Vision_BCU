@@ -1,114 +1,94 @@
-{% extends 'auth/admin.html' %}
+{% extends 'auth/admin.html' %} {% load static %} {% block links %}
+<link rel="stylesheet" href="{% static 'admin/user_reg.css' %}" />
+{% endblock %} {% block body %}
 
-{% load static %}
-
-{% block links %}
-    <link rel="stylesheet" href="{% static 'admin/user_reg.css' %}" />
-{% endblock %}
-
-{% block body %}
-
-{% for errors in form.non_field_errors %}
-<h1>{{errors}}</h1>
-{% endfor %}
-
-  <div class="body">
-    <div class="containers">
-        <div class="title"> User Registration</div>
-        <div class="content">
-          <form  method="POST">
-            {% csrf_token %}
-            <div class="user-details">
-              <div class="input-box">
-                <span class="details">First Name</span>
-                <!-- <input type="text" placeholder="Enter your first name" required name="first_name"> -->
-                 {{ form.first_name }}
-                 {{form.first_name.errors}}
-              </div>
-              <div class="input-box">
-                <span class="details">Last Name</span>
-                <!-- <input type="text" placeholder="Enter your last name" required name="last_name"> -->
-                {{ form.last_name }}
-                {{form.last_name.errors}}
-              </div>
-              <div class="input-box">
-                <span class="details">Username</span>
-                <!-- <input type="text" placeholder="Enter your username" required name="username"> -->
-                {{ form.username }}
-                {{form.username.errors}}
-              </div>
-              <div class="input-box">
-                <span class="details">Email</span>
-                <!-- <input type="email" placeholder="Enter your email" required name="email"> -->
-                {{ form.email }}
-                {{form.email.errors}}
-              </div>
-              <div class="input-box">
-                <span class="details">Password</span>
-                <!-- <input type="password" placeholder="Enter your password" required name="pswd1"> -->
-                {{ form.password1 }}
-                {{form.password1.errors}} 
-              </div>
-              <div class="input-box">
-                <span class="details">Confirm Password</span>
-                <!-- <input type="password" placeholder="Confirm your password" required name="pswd2"> -->
-                {{ form.password2 }}
-                {{form.password2.errors}}
-              </div>
-            </div>
-            <div class="button">
-              <input type="submit" value="Submit">
-            </div>
-          </form>
-        </div>
-      </div>
-  
-      <!-- Toast Message  -->
-      {% if messages %}
-
-      {% for message in messages %}
-      <div class="toast" id="toast{{ forloop.counter }}">
-        <div class="toast-content">
-          <i class="fas fa-solid fa-check check"></i>
-          <div class="message">
-            <!-- <span class="text text-1">Success!</span> -->
-            <span class="text text-2">{{message}}</span>
+<div class="body">
+  <div class="containers">
+    <div class="title">User Registration</div>
+    <div class="content">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="user-details">
+          <div class="input-box">
+            <span class="details">First Name</span>
+            <!-- <input type="text" placeholder="Enter your first name" required name="first_name"> -->
+            {{ form.first_name }} {{form.first_name.errors}}
+          </div>
+          <div class="input-box">
+            <span class="details">Last Name</span>
+            <!-- <input type="text" placeholder="Enter your last name" required name="last_name"> -->
+            {{ form.last_name }} {{form.last_name.errors}}
+          </div>
+          <div class="input-box">
+            <span class="details">Username</span>
+            <!-- <input type="text" placeholder="Enter your username" required name="username"> -->
+            {{ form.username }} {{form.username.errors}}
+          </div>
+          <div class="input-box">
+            <span class="details">Email</span>
+            <!-- <input type="email" placeholder="Enter your email" required name="email"> -->
+            {{ form.email }} {{form.email.errors}}
+          </div>
+          <div class="input-box">
+            <span class="details">Password</span>
+            <!-- <input type="password" placeholder="Enter your password" required name="pswd1"> -->
+            {{ form.password1 }} {{form.password1.errors}}
+          </div>
+          <div class="input-box">
+            <span class="details">Confirm Password</span>
+            <!-- <input type="password" placeholder="Confirm your password" required name="pswd2"> -->
+            {{ form.password2 }} {{form.password2.errors}}
           </div>
         </div>
-        <!-- <i class="fa-solid fa-xmark close"></i> -->
-        <i class="fas fa-times close" id="close{{ forloop.counter }}"></i>
-        <div class="progress"></div>
+        <div class="button">
+          <input type="submit" value="Submit" />
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Message  -->
+  {% if messages %} {% for message in messages %}
+  <div class="toast" id="toast{{ forloop.counter }}">
+    <div class="toast-content">
+      <i class="fas fa-solid fa-check check"></i>
+      <div class="message">
+        <!-- <span class="text text-1">Success!</span> -->
+        <span class="text text-2">{{message}}</span>
       </div>
-      {%endfor%}
-      
-<script>
-{% for message in messages %}
+    </div>
+    <!-- <i class="fa-solid fa-xmark close"></i> -->
+    <i class="fas fa-times close" id="close{{ forloop.counter }}"></i>
+    <div class="progress"></div>
+  </div>
+  {%endfor%}
+
+  <script>
+    {% for message in messages %}
     var toast{{ forloop.counter }} = document.getElementById('toast{{ forloop.counter }}');
     var close{{ forloop.counter }} = document.getElementById('close{{ forloop.counter }}');
-    
-    close{{ forloop.counter }}.addEventListener('click', function() {
-        removeToast(toast{{ forloop.counter }});
+
+    close{{ forloop.counter }}.addEventListener('click', function () {
+      removeToast(toast{{ forloop.counter }});
     });
 
-    setTimeout(function() {
-        removeToast(toast{{ forloop.counter }});
+    setTimeout(function () {
+      removeToast(toast{{ forloop.counter }});
     }, 3000);
-{% endfor %}
+    {% endfor %}
 
-function removeToast(el) {
-    el.style.opacity = '0';
-    el.style.height = '0';
-    el.style.margin = '0';
-    el.style.padding = '0';
-    setTimeout(function() {
+    function removeToast(el) {
+      el.style.opacity = '0';
+      el.style.height = '0';
+      el.style.margin = '0';
+      el.style.padding = '0';
+      setTimeout(function () {
         el.remove();
-    }, 500); // delay should match the transition duration
-}
-</script>
+      }, 500); // delay should match the transition duration
+    }
+  </script>
 
-{% endif %}
-
-
+  {% endif %}
 </div>
 
 {% endblock %}

@@ -1,11 +1,10 @@
-{% extends 'core/base.html' %}
-{% load static %}
-
-{% block link %}
-<link rel="stylesheet" href="{% static 'edit-profile.css' %}" />
-{% endblock %}
-
-{% block body %}
+{% extends 'core/base.html' %} {% load static %} {% block link %}
+<link rel="stylesheet" href="{% static 'edit-profile_new.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+{% endblock %} {% block body %}
 
 <div class="main-body">
   <section class="container">
@@ -17,20 +16,35 @@
       <!-- Displaying First Name (disabled) -->
       <div class="input-box">
         <label>First Name</label>
-        <input type="text" value="{{teacher.user.first_name}}" required disabled />
+        <input
+          type="text"
+          value="{{teacher.user.first_name}}"
+          required
+          disabled
+        />
       </div>
 
       <!-- Displaying Last Name (disabled) -->
       <div class="input-box">
         <label>Last Name</label>
-        <input type="text" value="{{teacher.user.last_name}}" required disabled />
+        <input
+          type="text"
+          value="{{teacher.user.last_name}}"
+          required
+          disabled
+        />
       </div>
 
       <!-- Column containing Email and Birth Date -->
       <div class="column">
         <div class="input-box">
           <label>Email Address</label>
-          <input type="email" value="{{teacher.user.email}}" name="email" required />
+          <input
+            type="email"
+            value="{{teacher.user.email}}"
+            name="email"
+            required
+          />
         </div>
         <div class="input-box">
           <label>Birth Date</label>
@@ -56,7 +70,7 @@
       <!-- Displaying Gender (disabled) -->
       <div class="input-box">
         <label for="gender">Gender</label>
-        <br>
+        <br />
         {{form.sex}}
       </div>
 
@@ -71,5 +85,49 @@
       <button class="button2" type="submit">Submit</button>
     </form>
   </section>
+
+  <!-- Toast Message -->
+
+  {% if messages %} {% for message in messages %}
+  <div class="toast" id="toast{{ forloop.counter }}">
+    <div class="toast-content">
+      <i class="fas fa-solid fa-check check"></i>
+      <div class="message">
+        <!-- <span class="text text-1">Success!</span> -->
+        <span class="text text-2">{{message}}</span>
+      </div>
+    </div>
+    <!-- <i class="fa-solid fa-xmark close"></i> -->
+    <i class="fas fa-times close" id="close{{ forloop.counter }}"></i>
+    <div class="progress"></div>
+  </div>
+  {%endfor%}
+
+  <script>
+    {% for message in messages %}
+    var toast{{ forloop.counter }} = document.getElementById('toast{{ forloop.counter }}');
+    var close{{ forloop.counter }} = document.getElementById('close{{ forloop.counter }}');
+
+      close{{ forloop.counter }}.addEventListener('click', function () {
+      removeToast(toast{{ forloop.counter }});
+      });
+
+    setTimeout(function () {
+      removeToast(toast{{ forloop.counter }});
+      }, 3000);
+    {% endfor %}
+
+    function removeToast(el) {
+      el.style.opacity = '0';
+      el.style.height = '0';
+      el.style.margin = '0';
+      el.style.padding = '0';
+      setTimeout(function () {
+        el.remove();
+      }, 500); // delay should match the transition duration
+    }
+  </script>
+
+  {% endif %}
 </div>
 {% endblock %}

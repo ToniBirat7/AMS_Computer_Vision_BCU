@@ -90,7 +90,9 @@
         <a href="{% url 'calendar' course.id %}"><button class="calendar">Take Attendance</button></a>
 
         <!-- Link to download report (update with actual URL) -->
-        <a href="path/to/download-report"><button class="cal-report">Report</button></a>
+        <a href="{% url 'download-report' course.id %}">
+          <button class="cal-report">Report</button>
+        </a>
       </div>
     </div>
   </div>

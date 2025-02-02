@@ -44,6 +44,15 @@ class UserRegistrationForm(forms.Form):
         if len(uname) <= 5 and ' ' in uname:
             raise forms.ValidationError('Username must be more than 5 characters')
         return uname
+    
+    def clean_password2(self):
+        pswd1 = self.cleaned_data.get('password1')
+        pswd2 = self.cleaned_data.get('password2')
+        
+        if  pswd1 != pswd2:
+            raise forms.ValidationError('The Passwords do not match')
+        
+        return pswd2
 
     def clean_password1(self):
         pwd1 = self.cleaned_data.get('password1')
@@ -62,11 +71,6 @@ class UserRegistrationForm(forms.Form):
     
     def clean(self):
         data = super().clean()
-        pswd1 = data.get('password1')
-        pswd2 = data.get('password2')
-
-        if  pswd1 != pswd2:
-            raise forms.ValidationError('The Passwords do not match')
         
         return data 
 
@@ -107,11 +111,11 @@ class StudentForm(forms.ModelForm):
             'phone_number' : forms.TextInput(attrs={'placeholder' : 'Enter Phone Number','class' : 'input-box'})
         }
 
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        if not name.isalpha():
-            raise forms.ValidationError('First Name should contain only alphabets')
-        return name
+    # def clean_name(self):
+    #     name = self.cleaned_data.get('name')
+    #     if not name.isalpha():
+    #         raise forms.ValidationError('First Name should contain only alphabets')
+    #     return name
     
     def clean_address(self):
         address = self.cleaned_data.get('address')
