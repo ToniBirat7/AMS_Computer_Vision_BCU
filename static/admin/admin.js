@@ -1,3 +1,5 @@
+const currentPath = window.location.pathname;
+
 document.addEventListener('DOMContentLoaded', function() {
     // Sidebar toggle functionality
     const sidebar = document.querySelector('.sidebar');
@@ -78,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Handle active state of sidebar items
-    const currentPath = window.location.pathname;
     sidebarItems.forEach(item => {
         if (item.getAttribute('href') === currentPath) {
             item.parentElement.classList.add('active');
@@ -209,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let current = '';
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            if (window.pageYOffset >= sectionTop - 60) {
+            if (window.scrollY >= sectionTop - 60) {
                 current = section.getAttribute('id');
             }
         });
@@ -223,7 +224,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Set active menu based on current URL
-    const currentPath = window.location.pathname;
     document.querySelectorAll('.nav-section a').forEach(link => {
         if (link.getAttribute('href') === currentPath) {
             link.parentElement.classList.add('active');

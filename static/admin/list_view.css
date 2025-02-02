@@ -72,7 +72,7 @@
 .item-main {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .item-main i {
@@ -80,9 +80,16 @@
   color: var(--secondary);
 }
 
+.item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .item-details h3 {
   font-size: 1.1rem;
   color: var(--text-primary);
+  font-weight: 600;
 }
 
 .item-details p {
@@ -178,4 +185,46 @@
 .empty-state i {
   font-size: 3rem;
   margin-bottom: 1rem;
+}
+
+/* Add these styles for teacher avatar */
+.teacher-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 164, 189, 0.2);
+  border: 2px solid var(--white);
+  transition: all 0.3s ease;
+}
+
+.teacher-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.teacher-avatar.no-image {
+  background: linear-gradient(45deg, var(--secondary), var(--primary));
+}
+
+.teacher-avatar.no-image i {
+  font-size: 2rem;
+  color: var(--white);
+}
+
+/* Hover effects */
+.list-item:hover .teacher-avatar {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 164, 189, 0.3);
+}
+
+.list-item:hover .teacher-avatar img {
+  transform: scale(1.1);
 } 

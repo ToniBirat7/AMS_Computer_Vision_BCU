@@ -23,10 +23,14 @@
     <div class="list-item" data-name="{{ teacher.user.get_full_name|lower }}" data-id="{{ teacher.id }}">
       <div class="item-info">
         <div class="item-main">
-          {% if teacher.my_image %}
-          <img src="{{ teacher.my_image.url }}" alt="{{ teacher.user.get_full_name }}" class="teacher-avatar">
+          {% if teacher.image %}
+          <div class="teacher-avatar">
+            <img src="{{ teacher.image.url }}" alt="{{ teacher.user.get_full_name }}">
+          </div>
           {% else %}
-          <i class='bx bx-user-circle'></i>
+          <div class="teacher-avatar no-image">
+            <i class='bx bx-user-circle'></i>
+          </div>
           {% endif %}
           <div class="item-details">
             <h3>{{ teacher.user.get_full_name }}</h3>
@@ -132,19 +136,19 @@
 <!-- Message Container -->
 <div class="message-container">
   {% if messages %}
-    {% for message in messages %}
-      <div class="message-item {{ message.tags }}">
-        <i class='bx {% if message.tags == "success" %}bx-check-circle{% else %}bx-error-circle{% endif %}'></i>
-        <span>{{ message }}</span>
-        <button class="close-btn" aria-label="Close">
-          <i class='bx bx-x'></i>
-        </button>
-      </div>
-    {% endfor %}
+  {% for message in messages %}
+  <div class="message-item {{ message.tags }}">
+    <i class='bx {% if message.tags == "success" %}bx-check-circle{% else %}bx-error-circle{% endif %}'></i>
+    <span>{{ message }}</span>
+    <button class="close-btn" aria-label="Close">
+      <i class='bx bx-x'></i>
+    </button>
+  </div>
+  {% endfor %}
   {% endif %}
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'admin/list_view.js' %}"></script>
-{% endblock %} 
+{% endblock %}
