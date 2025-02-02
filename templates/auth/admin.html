@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AMS | Dashboard</title>
+  <title>{% block title %}AMS | Dashboard{% endblock %}</title>
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,9 +17,7 @@
   <link rel="stylesheet" href="{% static 'admin/admin.css' %}">
   <!-- Font Awesome CDN Link -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  {% block links %}
-
-  {% endblock %}
+  {% block extra_css %}{% endblock %}
 
   <!-- Block for additional links if needed -->
 </head>
@@ -100,6 +98,7 @@
 
     <!-- Main Content -->
     <main class="main-content">
+      {% block content %}
       <header class="content-header">
         <div class="header-title">
           <h1>Welcome Back, Admin</h1>
@@ -253,10 +252,12 @@
           {% endfor %}
         </div>
       </section>
+      {% endblock content %}
     </main>
   </div>
   <!-- Add JavaScript -->
   <script src="{% static 'admin/admin.js' %}"></script>
+  {% block extra_js %}{% endblock %}
 </body>
 
 </html>
