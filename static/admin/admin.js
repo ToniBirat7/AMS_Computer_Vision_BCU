@@ -1,267 +1,232 @@
 document.addEventListener('DOMContentLoaded', function() {
-const sidebar = document.querySelector('.sidebar');
-const mainContent = document.querySelector('.main-content');
-const sidebarToggle = document.querySelector('.sidebar-toggle');
-const toggleIcon = sidebarToggle.querySelector('i');
-let isMobile = window.innerWidth <= 768;
+    // Sidebar toggle functionality
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    const toggleIcon = sidebarToggle.querySelector('i');
+    let isMobile = window.innerWidth <= 768;
 
-// Function to handle sidebar toggle
-function toggleSidebar(e) {
-    e.stopPropagation();
-    if (isMobile) {
-        sidebar.classList.toggle('show');
-    } else {
-        sidebar.classList.toggle('collapsed');
-        mainContent.classList.toggle('expanded');
+    // Function to handle sidebar toggle
+    function toggleSidebar(e) {
+        e.stopPropagation();
+        if (isMobile) {
+            sidebar.classList.toggle('show');
+        } else {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        }
+        
+        // Update toggle icon
+        if (sidebar.classList.contains('collapsed') || sidebar.classList.contains('show')) {
+            toggleIcon.classList.remove('bx-menu');
+            toggleIcon.classList.add('bx-x');
+        } else {
+            toggleIcon.classList.remove('bx-x');
+            toggleIcon.classList.add('bx-menu');
+        }
     }
-    
-    // Update toggle icon
-    if (sidebar.classList.contains('collapsed') || sidebar.classList.contains('show')) {
-        toggleIcon.classList.remove('bx-menu');
-        toggleIcon.classList.add('bx-x');
-    } else {
-        toggleIcon.classList.remove('bx-x');
-        toggleIcon.classList.add('bx-menu');
-    }
-}
 
-// Toggle sidebar on button click
-sidebarToggle.addEventListener('click', toggleSidebar);
+    // Toggle sidebar on button click
+    sidebarToggle.addEventListener('click', toggleSidebar);
 
-// Handle window resize
-window.addEventListener('resize', function() {
-    isMobile = window.innerWidth <= 768;
-    if (isMobile) {
-        sidebar.classList.remove('collapsed');
-        mainContent.classList.remove('expanded');
-    }
-});
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('expanded');
+        }
+    });
 
-// Close sidebar when clicking outside on mobile
-document.addEventListener('click', function(e) {
-    if (isMobile && 
-        !sidebar.contains(e.target) && 
-        !sidebarToggle.contains(e.target) && 
-        sidebar.classList.contains('show')) {
-        sidebar.classList.remove('show');
-    }
-});
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(e) {
+        if (isMobile && 
+            !sidebar.contains(e.target) && 
+            !sidebarToggle.contains(e.target) && 
+            sidebar.classList.contains('show')) {
+            sidebar.classList.remove('show');
+        }
+    });
 
-// Prevent sidebar close when clicking inside
-sidebar.addEventListener('click', function(e) {
-    e.stopPropagation();
-});
+    // Prevent sidebar close when clicking inside
+    sidebar.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
 
-// Improve hover handling for sidebar items
-const sidebarItems = document.querySelectorAll('.sidebar-nav li a');
-sidebarItems.forEach(item => {
-    item.addEventListener('mouseenter', function() {
-        if (sidebar.classList.contains('collapsed')) {
-            const span = this.querySelector('span');
-            if (span) {
-                span.style.opacity = '1';
-                span.style.visibility = 'visible';
+    // Improve hover handling for sidebar items
+    const sidebarItems = document.querySelectorAll('.sidebar-nav li a');
+    sidebarItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            if (sidebar.classList.contains('collapsed')) {
+                const span = this.querySelector('span');
+                if (span) {
+                    span.style.opacity = '1';
+                    span.style.visibility = 'visible';
+                }
             }
-        }
-    });
-    
-    item.addEventListener('mouseleave', function() {
-        if (sidebar.classList.contains('collapsed')) {
-            const span = this.querySelector('span');
-            if (span) {
-                span.style.opacity = '0';
-                span.style.visibility = 'hidden';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            if (sidebar.classList.contains('collapsed')) {
+                const span = this.querySelector('span');
+                if (span) {
+                    span.style.opacity = '0';
+                    span.style.visibility = 'hidden';
+                }
             }
-        }
+        });
     });
-});
 
-// Handle active state of sidebar items
-const currentPath = window.location.pathname;
-sidebarItems.forEach(item => {
-    if (item.getAttribute('href') === currentPath) {
-        item.parentElement.classList.add('active');
-    }
-});
-
-// Search functionality
-const searchInput = document.querySelector('.search-box input');
-const teacherCards = document.querySelectorAll('.teacher-card');
-const studentRows = document.querySelectorAll('.data-table tbody tr');
-const courseCards = document.querySelectorAll('.course-card');
-
-searchInput.addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-
-    // Search teachers
-    teacherCards.forEach(card => {
-        const teacherName = card.querySelector('h3').textContent.toLowerCase();
-        const teacherInfo = card.querySelector('.card-body').textContent.toLowerCase();
-        
-        if (teacherName.includes(searchTerm) || teacherInfo.includes(searchTerm)) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
+    // Handle active state of sidebar items
+    const currentPath = window.location.pathname;
+    sidebarItems.forEach(item => {
+        if (item.getAttribute('href') === currentPath) {
+            item.parentElement.classList.add('active');
         }
     });
 
-    // Search students
-    studentRows.forEach(row => {
-        const studentInfo = row.textContent.toLowerCase();
-        if (studentInfo.includes(searchTerm)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
+    // Search functionality
+    const searchInput = document.querySelector('.search-box input');
+    const teacherCards = document.querySelectorAll('.teacher-card');
+    const studentRows = document.querySelectorAll('.data-table tbody tr');
+    const courseCards = document.querySelectorAll('.course-card');
 
-    // Search courses
-    courseCards.forEach(card => {
-        const courseInfo = card.textContent.toLowerCase();
-        if (courseInfo.includes(searchTerm)) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-});
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
 
-// Add hover effect to cards
-const cards = document.querySelectorAll('.teacher-card, .course-card, .stat-card');
-cards.forEach(card => {
-    card.addEventListener('mousemove', function(e) {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = (y - centerY) / 20;
-        const rotateY = (centerX - x) / 20;
-        
-        card.style.transform = `
-            perspective(1000px)
-            rotateX(${rotateX}deg)
-            rotateY(${rotateY}deg)
-            translateZ(10px)
-        `;
-    });
-    
-    card.addEventListener('mouseleave', function() {
-        card.style.transform = 'none';
-    });
-});
-
-// Handle action buttons
-const actionButtons = document.querySelectorAll('.action-buttons button');
-actionButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        const action = this.classList.contains('edit-btn') ? 'edit' : 'delete';
-        const row = this.closest('tr');
-        const id = row.querySelector('td:first-child').textContent.replace('#', '');
-
-        if (action === 'edit') {
-            // Handle edit action
-            console.log('Edit student with ID:', id);
-            // Add your edit logic here
-        } else {
-            // Handle delete action
-            if (confirm('Are you sure you want to delete this student?')) {
-                console.log('Delete student with ID:', id);
-                // Add your delete logic here
+        // Search teachers
+        teacherCards.forEach(card => {
+            const teacherName = card.querySelector('h3').textContent.toLowerCase();
+            const teacherInfo = card.querySelector('.card-body').textContent.toLowerCase();
+            
+            if (teacherName.includes(searchTerm) || teacherInfo.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
             }
-        }
-    });
-});
+        });
 
-// Auto-hide messages after 3 seconds
-const messages = document.querySelectorAll('.alert');
-messages.forEach(message => {
-    setTimeout(() => {
-        message.style.opacity = '0';
-        message.style.transform = 'translateX(100%)';
+        // Search students
+        studentRows.forEach(row => {
+            const studentInfo = row.textContent.toLowerCase();
+            if (studentInfo.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Search courses
+        courseCards.forEach(card => {
+            const courseInfo = card.textContent.toLowerCase();
+            if (courseInfo.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    // Add hover effect to cards
+    const cards = document.querySelectorAll('.teacher-card, .course-card, .stat-card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', function(e) {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            card.style.transform = `
+                perspective(1000px)
+                rotateX(${rotateX}deg)
+                rotateY(${rotateY}deg)
+                translateZ(10px)
+            `;
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            card.style.transform = 'none';
+        });
+    });
+
+    // Handle action buttons
+    const actionButtons = document.querySelectorAll('.action-buttons button');
+    actionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const action = this.classList.contains('edit-btn') ? 'edit' : 'delete';
+            const row = this.closest('tr');
+            const id = row.querySelector('td:first-child').textContent.replace('#', '');
+
+            if (action === 'edit') {
+                // Handle edit action
+                console.log('Edit student with ID:', id);
+                // Add your edit logic here
+            } else {
+                // Handle delete action
+                if (confirm('Are you sure you want to delete this student?')) {
+                    console.log('Delete student with ID:', id);
+                    // Add your delete logic here
+                }
+            }
+        });
+    });
+
+    // Auto-hide messages after 3 seconds
+    const messages = document.querySelectorAll('.alert');
+    messages.forEach(message => {
         setTimeout(() => {
-            message.remove();
-        }, 300);
-    }, 3000);
-});
-
-// Add smooth scrolling to navigation links
-document.querySelectorAll('.sidebar-nav a').forEach(link => {
-    link.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href.startsWith('#')) {
-            e.preventDefault();
-            document.querySelector(href).scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-// Add active state to current section in sidebar
-const sections = document.querySelectorAll('.data-section');
-const navLinks = document.querySelectorAll('.sidebar-nav a');
-
-window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        if (window.pageYOffset >= sectionTop - 60) {
-            current = section.getAttribute('id');
-        }
+            message.style.opacity = '0';
+            message.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                message.remove();
+            }, 300);
+        }, 3000);
     });
 
-    navLinks.forEach(link => {
-        link.parentElement.classList.remove('active');
-        if (link.getAttribute('href').includes(current)) {
+    // Add smooth scrolling to navigation links
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                document.querySelector(href).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Add active state to current section in sidebar
+    const sections = document.querySelectorAll('.data-section');
+    const navLinks = document.querySelectorAll('.sidebar-nav a');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (window.pageYOffset >= sectionTop - 60) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.parentElement.classList.remove('active');
+            if (link.getAttribute('href').includes(current)) {
+                link.parentElement.classList.add('active');
+            }
+        });
+    });
+
+    // Set active menu based on current URL
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.nav-section a').forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
             link.parentElement.classList.add('active');
         }
     });
-})
-
-// Handle submenu toggles
-const navLinks = document.querySelectorAll('.nav-item.has-submenu .nav-link');
-    
-navLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const navItem = this.closest('.nav-item');
-        const submenu = navItem.querySelector('.submenu');
-        
-        // If sidebar is not collapsed
-        if (!document.querySelector('.sidebar').classList.contains('collapsed')) {
-            // Close other submenus
-            document.querySelectorAll('.nav-item.has-submenu').forEach(item => {
-                if (item !== navItem) {
-                    item.classList.remove('active');
-                }
-            });
-            
-            // Toggle current submenu
-            navItem.classList.toggle('active');
-            
-            // Set submenu height for animation
-            if (navItem.classList.contains('active')) {
-                submenu.style.height = submenu.scrollHeight + 'px';
-            } else {
-                submenu.style.height = '0';
-            }
-        }
-    });
-});
-
-// Set active state based on current URL
-const currentPath = window.location.pathname;
-document.querySelectorAll('.submenu a').forEach(link => {
-    if (link.getAttribute('href') === currentPath) {
-        const navItem = link.closest('.nav-item');
-        navItem.classList.add('active');
-        const submenu = navItem.querySelector('.submenu');
-        submenu.style.height = submenu.scrollHeight + 'px';
-    }
-});
 });
