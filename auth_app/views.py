@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from .forms import LoginForm, UserRegistrationForm, TeacherForm, StudentForm, CourseForm, StudentClassForm
 from .models import Teacher, Student, Course, StudentClass
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 def login_page(request):
     next = request.GET.get('next')
@@ -228,17 +229,59 @@ def edit_student(request, id):
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 @login_required
+@require_POST
+def update_student(request):
+    try:
+        student_id = request.POST.get('student_id')
+        student = Student.objects.get(id=student_id)
+        
+        # Update student details
+        student.name = request.POST.get('name')
+        student.address = request.POST.get('address')
+        student.phone_number = request.POST.get('phone_number')
+        student.age = request.POST.get('age')
+        student.save()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Student updated successfully'
+        })
+
+    except Student.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Student not found'
+        }, status=404)
+    
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+
+@login_required
+@require_POST
 def delete_student(request, id):
-    if request.method == 'POST':
-        student = get_object_or_404(Student, id=id)
-        try:
-            student.delete()
-            messages.success(request, 'Student deleted successfully')
-            return JsonResponse({'success': True})
-        except Exception as e:
-            messages.error(request, 'Error deleting student')
-            return JsonResponse({'success': False, 'error': str(e)})
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    try:
+        student = Student.objects.get(id=id)
+        student.delete()
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Student deleted successfully'
+        })
+        
+    except Student.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Student not found'
+        }, status=404)
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
 
 @login_required
 def get_teacher(request, id):
@@ -253,35 +296,61 @@ def get_teacher(request, id):
     return JsonResponse(data)
 
 @login_required
-def edit_teacher(request, id):
-    if request.method == 'POST':
-        teacher = get_object_or_404(Teacher, id=id)
-        try:
-            teacher.address = request.POST.get('address')
-            teacher.primary_number = request.POST.get('primary_number')
-            teacher.secondary_number = request.POST.get('secondary_number')
-            teacher.dob = request.POST.get('dob')
-            
-            if 'my_image' in request.FILES:
-                teacher.my_image = request.FILES['my_image']
-            
-            teacher.save()
-            messages.success(request, 'Teacher updated successfully')
-            return JsonResponse({'success': True})
-        except Exception as e:
-            messages.error(request, 'Error updating teacher')
-            return JsonResponse({'success': False, 'error': str(e)})
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+@require_POST
+def update_teacher(request):
+    try:
+        teacher_id = request.POST.get('teacher_id')
+        teacher = Teacher.objects.get(id=teacher_id)
+        
+        # Update teacher details
+        teacher.address = request.POST.get('address')
+        teacher.primary_number = request.POST.get('primary_number')
+        teacher.secondary_number = request.POST.get('secondary_number', '')
+        teacher.dob = request.POST.get('dob')
+        teacher.save()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Teacher updated successfully'
+        })
+
+    except Teacher.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Teacher not found'
+        }, status=404)
+    
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
 
 @login_required
+@require_POST
 def delete_teacher(request, id):
-    if request.method == 'POST':
-        teacher = get_object_or_404(Teacher, id=id)
-        try:
+    try:
+        teacher = Teacher.objects.get(id=id)
+        
+        # Delete associated user
+        if teacher.user:
+            teacher.user.delete()  # This will cascade delete the teacher due to OneToOne relationship
+        else:
             teacher.delete()
-            messages.success(request, 'Teacher deleted successfully')
-            return JsonResponse({'success': True})
-        except Exception as e:
-            messages.error(request, 'Error deleting teacher')
-            return JsonResponse({'success': False, 'error': str(e)})
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Teacher deleted successfully'
+        })
+        
+    except Teacher.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Teacher not found'
+        }, status=404)
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)

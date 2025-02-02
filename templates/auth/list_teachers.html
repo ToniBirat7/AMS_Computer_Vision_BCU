@@ -20,7 +20,10 @@
 
   <div class="list-content">
     {% for teacher in teachers %}
-    <div class="list-item" data-name="{{ teacher.user.get_full_name|lower }}" data-id="{{ teacher.id }}">
+    <div class="list-item" data-name="{{ teacher.user.get_full_name|lower }}" data-id="{{ teacher.id }}"
+      data-address="{{ teacher.address }}" data-primary="{{ teacher.primary_number }}"
+      data-secondary="{{ teacher.secondary_number }}" data-dob="{{ teacher.dob|date:'Y-m-d' }}"
+      data-image="{% if teacher.image %}{{ teacher.image.url }}{% endif %}">
       <div class="item-info">
         <div class="item-main">
           {% if teacher.image %}
@@ -67,7 +70,7 @@
       <h2>Edit Teacher</h2>
       <button class="close-modal"><i class='bx bx-x'></i></button>
     </div>
-    <form id="editForm" method="POST" enctype="multipart/form-data">
+    <form id="editForm" method="POST">
       {% csrf_token %}
       <div class="form-grid">
         <div class="input-group">
@@ -86,25 +89,13 @@
           <label>
             <i class='bx bx-phone'></i>Secondary Number
           </label>
-          <input type="tel" name="secondary_number" required pattern="[0-9]{10}">
+          <input type="tel" name="secondary_number" pattern="[0-9]{10}">
         </div>
         <div class="input-group">
           <label>
             <i class='bx bx-calendar'></i>Date of Birth
           </label>
           <input type="date" name="dob" required>
-        </div>
-        <div class="input-group file-group">
-          <label>
-            <i class='bx bx-image'></i>Profile Image
-          </label>
-          <div class="file-upload">
-            <input type="file" name="my_image" accept="image/*">
-            <div class="file-preview">
-              <i class='bx bx-image-add'></i>
-              <span>Click or drag image here to upload</span>
-            </div>
-          </div>
         </div>
       </div>
       <div class="form-actions">
@@ -128,25 +119,15 @@
     </div>
     <div class="modal-footer">
       <button class="cancel-btn">Cancel</button>
-      <button class="delete-confirm-btn">Delete</button>
+      <button class="delete-confirm-btn">
+        <i class='bx bx-trash'></i>Delete
+      </button>
     </div>
   </div>
 </div>
 
 <!-- Message Container -->
-<div class="message-container">
-  {% if messages %}
-  {% for message in messages %}
-  <div class="message-item {{ message.tags }}">
-    <i class='bx {% if message.tags == "success" %}bx-check-circle{% else %}bx-error-circle{% endif %}'></i>
-    <span>{{ message }}</span>
-    <button class="close-btn" aria-label="Close">
-      <i class='bx bx-x'></i>
-    </button>
-  </div>
-  {% endfor %}
-  {% endif %}
-</div>
+<div class="message-container"></div>
 {% endblock %}
 
 {% block extra_js %}

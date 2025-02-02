@@ -20,10 +20,13 @@
 
   <div class="list-content">
     {% for student in students %}
-    <div class="list-item" data-name="{{ student.name|lower }}" data-id="{{ student.id }}">
+    <div class="list-item" data-name="{{ student.name|lower }}" data-id="{{ student.id }}"
+      data-address="{{ student.address }}" data-phone="{{ student.phone_number }}" data-age="{{ student.age }}">
       <div class="item-info">
         <div class="item-main">
-          <i class='bx bx-user-circle'></i>
+          <div class="student-avatar no-image">
+            <i class='bx bx-user-circle'></i>
+          </div>
           <div class="item-details">
             <h3>{{ student.name }}</h3>
             <p>{{ student.address }}</p>
@@ -31,7 +34,7 @@
         </div>
         <div class="item-secondary">
           <span><i class='bx bx-phone'></i>{{ student.phone_number }}</span>
-          <span><i class='bx bx-calendar'></i>Age: {{ student.age }}</span>
+          <span><i class='bx bx-user'></i>Age: {{ student.age }}</span>
         </div>
       </div>
       <div class="item-actions">
@@ -64,7 +67,7 @@
       <div class="form-grid">
         <div class="input-group">
           <label>
-            <i class='bx bx-user'></i>Full Name
+            <i class='bx bx-user'></i>Name
           </label>
           <input type="text" name="name" required>
         </div>
@@ -76,15 +79,15 @@
         </div>
         <div class="input-group">
           <label>
-            <i class='bx bx-calendar'></i>Age
-          </label>
-          <input type="number" name="age" required min="5" max="100">
-        </div>
-        <div class="input-group">
-          <label>
             <i class='bx bx-phone'></i>Phone Number
           </label>
           <input type="tel" name="phone_number" required pattern="[0-9]{10}">
+        </div>
+        <div class="input-group">
+          <label>
+            <i class='bx bx-user'></i>Age
+          </label>
+          <input type="number" name="age" required min="1" max="100">
         </div>
       </div>
       <div class="form-actions">
@@ -108,7 +111,9 @@
     </div>
     <div class="modal-footer">
       <button class="cancel-btn">Cancel</button>
-      <button class="delete-confirm-btn">Delete</button>
+      <button class="delete-confirm-btn">
+        <i class='bx bx-trash'></i>Delete
+      </button>
     </div>
   </div>
 </div>
@@ -116,19 +121,19 @@
 <!-- Message Container -->
 <div class="message-container">
   {% if messages %}
-    {% for message in messages %}
-      <div class="message-item {{ message.tags }}">
-        <i class='bx {% if message.tags == "success" %}bx-check-circle{% else %}bx-error-circle{% endif %}'></i>
-        <span>{{ message }}</span>
-        <button class="close-btn" aria-label="Close">
-          <i class='bx bx-x'></i>
-        </button>
-      </div>
-    {% endfor %}
+  {% for message in messages %}
+  <div class="message-item {{ message.tags }}">
+    <i class='bx {% if message.tags == "success" %}bx-check-circle{% else %}bx-error-circle{% endif %}'></i>
+    <span>{{ message }}</span>
+    <button class="close-btn" aria-label="Close">
+      <i class='bx bx-x'></i>
+    </button>
+  </div>
+  {% endfor %}
   {% endif %}
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'admin/list_view.js' %}"></script>
-{% endblock %} 
+<script src="{% static 'admin/student_list.js' %}"></script>
+{% endblock %}

@@ -4,28 +4,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const editForm = document.getElementById('editForm');
     const deleteModal = document.getElementById('deleteModal');
     const searchInput = document.getElementById('searchInput');
-    let currentTeacherId = null;
+    let currentStudentId = null;
 
     // Handle edit button clicks
     document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', function() {
-            const teacherId = this.dataset.id;
-            const listItem = document.querySelector(`.list-item[data-id="${teacherId}"]`);
+            const studentId = this.dataset.id;
+            const listItem = document.querySelector(`.list-item[data-id="${studentId}"]`);
             
-            // Get teacher data from data attributes
+            // Get student data from data attributes
+            const name = listItem.querySelector('.item-details h3').textContent;
             const address = listItem.dataset.address;
-            const primaryNumber = listItem.dataset.primary;
-            const secondaryNumber = listItem.dataset.secondary;
-            const dob = listItem.dataset.dob;
+            const phone = listItem.dataset.phone;
+            const age = listItem.dataset.age;
 
             // Populate form fields
+            editForm.querySelector('[name="name"]').value = name;
             editForm.querySelector('[name="address"]').value = address;
-            editForm.querySelector('[name="primary_number"]').value = primaryNumber;
-            editForm.querySelector('[name="secondary_number"]').value = secondaryNumber || '';
-            editForm.querySelector('[name="dob"]').value = dob;
+            editForm.querySelector('[name="phone_number"]').value = phone;
+            editForm.querySelector('[name="age"]').value = age;
 
-            // Store current teacher ID
-            currentTeacherId = teacherId;
+            // Store current student ID
+            currentStudentId = studentId;
             
             // Show modal
             editModal.classList.add('active');
@@ -37,10 +37,10 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
 
         const formData = new FormData(this);
-        formData.append('teacher_id', currentTeacherId);
+        formData.append('student_id', currentStudentId);
 
         try {
-            const response = await fetch('/update_teacher/', {
+            const response = await fetch('/update_student/', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -52,45 +52,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (data.status === 'success') {
                 // Update the list item with new data
-                const listItem = document.querySelector(`.list-item[data-id="${currentTeacherId}"]`);
+                const listItem = document.querySelector(`.list-item[data-id="${currentStudentId}"]`);
                 
                 // Update data attributes
+                listItem.dataset.name = formData.get('name').toLowerCase();
                 listItem.dataset.address = formData.get('address');
-                listItem.dataset.primary = formData.get('primary_number');
-                listItem.dataset.secondary = formData.get('secondary_number');
-                listItem.dataset.dob = formData.get('dob');
+                listItem.dataset.phone = formData.get('phone_number');
+                listItem.dataset.age = formData.get('age');
 
                 // Update visible content
+                listItem.querySelector('.item-details h3').textContent = formData.get('name');
                 listItem.querySelector('.item-details p').textContent = formData.get('address');
                 listItem.querySelector('.item-secondary span:first-child').innerHTML = 
-                    `<i class='bx bx-phone'></i>${formData.get('primary_number')}`;
+                    `<i class='bx bx-phone'></i>${formData.get('phone_number')}`;
+                listItem.querySelector('.item-secondary span:last-child').innerHTML = 
+                    `<i class='bx bx-user'></i>Age: ${formData.get('age')}`;
 
-                // Show success message
-                showMessage('Teacher details updated successfully', 'success');
-                
-                // Close modal
+                showMessage('Student details updated successfully', 'success');
                 editModal.classList.remove('active');
             } else {
-                showMessage(data.message || 'Error updating teacher', 'error');
+                showMessage(data.message || 'Error updating student', 'error');
             }
         } catch (error) {
-            showMessage('Error updating teacher', 'error');
+            showMessage('Error updating student', 'error');
         }
     });
 
     // Handle delete button clicks
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', function() {
-            const teacherId = this.dataset.id;
-            const listItem = document.querySelector(`.list-item[data-id="${teacherId}"]`);
-            const teacherName = listItem.querySelector('.item-details h3').textContent;
+            const studentId = this.dataset.id;
+            const listItem = document.querySelector(`.list-item[data-id="${studentId}"]`);
+            const studentName = listItem.querySelector('.item-details h3').textContent;
             
             // Update delete modal content
             const modalBody = deleteModal.querySelector('.modal-body p');
-            modalBody.textContent = `Are you sure you want to delete ${teacherName}? This action cannot be undone.`;
+            modalBody.textContent = `Are you sure you want to delete ${studentName}? This action cannot be undone.`;
             
-            // Store teacher ID for delete confirmation
-            deleteModal.dataset.teacherId = teacherId;
+            // Store student ID for delete confirmation
+            deleteModal.dataset.studentId = studentId;
             
             // Show delete modal
             deleteModal.classList.add('active');
@@ -100,10 +100,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle delete confirmation
     const deleteConfirmBtn = document.querySelector('.delete-confirm-btn');
     deleteConfirmBtn.addEventListener('click', async function() {
-        const teacherId = deleteModal.dataset.teacherId;
+        const studentId = deleteModal.dataset.studentId;
         
         try {
-            const response = await fetch(`/delete-teacher/${teacherId}/`, {
+            const response = await fetch(`/delete-student/${studentId}/`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
@@ -115,8 +115,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (data.success) {
                 // Remove the item from DOM
-                const listItem = document.querySelector(`.list-item[data-id="${teacherId}"]`);
-                listItem.style.height = listItem.offsetHeight + 'px'; // Set fixed height for animation
+                const listItem = document.querySelector(`.list-item[data-id="${studentId}"]`);
+                listItem.style.height = listItem.offsetHeight + 'px';
                 
                 // Add removing class for animation
                 listItem.style.opacity = '0';
@@ -132,22 +132,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         emptyState.className = 'empty-state';
                         emptyState.innerHTML = `
                             <i class='bx bx-folder-open'></i>
-                            <p>No teachers found</p>
+                            <p>No students found</p>
                         `;
                         listContent.appendChild(emptyState);
                     }
                 }, 300);
 
-                showMessage('Teacher deleted successfully', 'success');
+                showMessage('Student deleted successfully', 'success');
             } else {
-                showMessage(data.error || 'Error deleting teacher', 'error');
+                showMessage(data.error || 'Error deleting student', 'error');
             }
             
-            // Close delete modal
             deleteModal.classList.remove('active');
-            
         } catch (error) {
-            showMessage('Error deleting teacher', 'error');
+            showMessage('Error deleting student', 'error');
             deleteModal.classList.remove('active');
         }
     });
@@ -169,12 +167,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Message handling
+    // Message handling functions (same as teacher list)
     function showMessage(message, type) {
         const messageContainer = document.querySelector('.message-container');
         if (!messageContainer) return;
 
-        // Create message element
         const messageElement = document.createElement('div');
         messageElement.className = `message-item ${type}`;
         messageElement.innerHTML = `
@@ -185,14 +182,11 @@ document.addEventListener('DOMContentLoaded', function() {
             </button>
         `;
 
-        // Add to container
         messageContainer.appendChild(messageElement);
 
-        // Handle close button
         const closeBtn = messageElement.querySelector('.close-btn');
         closeBtn.addEventListener('click', () => removeMessage(messageElement));
 
-        // Auto remove after 5 seconds
         setTimeout(() => removeMessage(messageElement), 5000);
     }
 
