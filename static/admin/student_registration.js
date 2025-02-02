@@ -1,9 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('registrationForm');
-    const formSteps = document.querySelectorAll('.form-step');
-    const progressSteps = document.querySelectorAll('.progress-step');
-    let currentStep = 1;
-
     // Guidelines Carousel
     const carousel = {
         container: document.querySelector('.guidelines-carousel'),
@@ -62,87 +57,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Form Navigation
-    function goToStep(step) {
-        formSteps.forEach(s => s.classList.remove('active'));
-        progressSteps.forEach(s => s.classList.remove('active'));
-
-        formSteps[step - 1].classList.add('active');
-        for (let i = 0; i < step; i++) {
-            progressSteps[i].classList.add('active');
-        }
-        currentStep = step;
-    }
-
-    // Form Validation
-    function validateStep(step) {
-        const currentStepEl = document.querySelector(`.form-step[data-step="${step}"]`);
-        const inputs = currentStepEl.querySelectorAll('input[required]');
-        let isValid = true;
-
-        inputs.forEach(input => {
-            if (!input.value) {
-                const group = input.closest('.input-group');
-                group.classList.add('has-error');
-                isValid = false;
-            } else {
-                input.closest('.input-group').classList.remove('has-error');
-            }
-        });
-
-        return isValid;
-    }
-
-    // Event Listeners
-    document.querySelectorAll('.next-step-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (validateStep(currentStep)) {
-                goToStep(currentStep + 1);
-            }
-        });
-    });
-
-    document.querySelectorAll('.prev-step-btn').forEach(btn => {
-        btn.addEventListener('click', () => goToStep(currentStep - 1));
-    });
-
-    // Password Toggle
-    document.querySelectorAll('.password-toggle').forEach(toggle => {
-        toggle.addEventListener('click', function() {
-            const input = this.previousElementSibling;
-            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-            input.setAttribute('type', type);
-            this.classList.toggle('bx-hide');
-            this.classList.toggle('bx-show');
-        });
-    });
-
-    // Form Submit
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            const passwords = form.querySelectorAll('input[type="password"]');
-            if (passwords[0].value !== passwords[1].value) {
-                e.preventDefault();
-                const group = passwords[1].closest('.input-group');
-                group.classList.add('has-error');
-            }
-        });
-    }
-
-    // Update the message handling functions
+    // Message System
     function initMessages() {
         const messages = document.querySelectorAll('.message-item');
         
         messages.forEach((message, index) => {
-            // Add staggered animation delay
             message.style.animationDelay = `${index * 100}ms`;
             
-            // Auto dismiss after 3 seconds
             setTimeout(() => {
                 removeMessage(message);
             }, 3000 + (index * 100));
             
-            // Handle close button
             const closeBtn = message.querySelector('.close-btn');
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => {
@@ -157,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
             message.classList.add('removing');
             setTimeout(() => {
                 message.remove();
-                // Remove container if no messages left
                 const container = document.querySelector('.message-container');
                 if (container && !container.hasChildNodes()) {
                     container.remove();
@@ -166,9 +90,68 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Initialize messages
-    initMessages();
+    // Form Validation
+    const form = document.getElementById('studentForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const requiredInputs = form.querySelectorAll('input[required]');
+            let isValid = true;
+
+            requiredInputs.forEach(input => {
+                if (!input.value) {
+                    const group = input.closest('.input-group');
+                    group.classList.add('has-error');
+                    isValid = false;
+                } else {
+                    input.closest('.input-group').classList.remove('has-error');
+                }
+
+                // Additional validation for age and phone
+                if (input.name === 'age') {
+                    const age = parseInt(input.value);
+                    if (isNaN(age) || age < 5 || age > 100) {
+                        const group = input.closest('.input-group');
+                        group.classList.add('has-error');
+                        isValid = false;
+                    }
+                }
+
+                if (input.name === 'phone_number') {
+                    const phone = input.value.replace(/\D/g, '');
+                    if (phone.length !== 10) {
+                        const group = input.closest('.input-group');
+                        group.classList.add('has-error');
+                        isValid = false;
+                    }
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+
+        // Real-time validation
+        const phoneInput = form.querySelector('input[name="phone_number"]');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function(e) {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length > 10) value = value.slice(0, 10);
+                this.value = value;
+            });
+        }
+
+        const ageInput = form.querySelector('input[name="age"]');
+        if (ageInput) {
+            ageInput.addEventListener('input', function(e) {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length > 2) value = value.slice(0, 2);
+                this.value = value;
+            });
+        }
+    }
 
     // Initialize
     carousel.init();
+    initMessages();
 }); 

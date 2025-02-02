@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .forms import LoginForm, UserRegistrationForm, TeacherForm, StudentForm, CourseForm, StudentClassForm
 from .models import Teacher, Student, Course, StudentClass
+from django.http import JsonResponse
 
 def login_page(request):
     next = request.GET.get('next')
@@ -186,3 +187,100 @@ def add_student_class(request):
     else:
         form = StudentClassForm()
     return render(request, 'auth/addclass.html',{'form': form})
+
+@login_required
+def list_students(request):
+    students = Student.objects.all()
+    return render(request, 'auth/list_students.html', {'students': students})
+
+@login_required
+def list_teachers(request):
+    teachers = Teacher.objects.all()
+    return render(request, 'auth/list_teachers.html', {'teachers': teachers})
+
+@login_required
+def get_student(request, id):
+    student = get_object_or_404(Student, id=id)
+    data = {
+        'name': student.name,
+        'address': student.address,
+        'age': student.age,
+        'phone_number': student.phone_number
+    }
+    return JsonResponse(data)
+
+@login_required
+def edit_student(request, id):
+    if request.method == 'POST':
+        student = get_object_or_404(Student, id=id)
+        try:
+            student.name = request.POST.get('name')
+            student.address = request.POST.get('address')
+            student.age = request.POST.get('age')
+            student.phone_number = request.POST.get('phone_number')
+            student.save()
+            messages.success(request, 'Student updated successfully')
+            return JsonResponse({'success': True})
+        except Exception as e:
+            messages.error(request, 'Error updating student')
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+@login_required
+def delete_student(request, id):
+    if request.method == 'POST':
+        student = get_object_or_404(Student, id=id)
+        try:
+            student.delete()
+            messages.success(request, 'Student deleted successfully')
+            return JsonResponse({'success': True})
+        except Exception as e:
+            messages.error(request, 'Error deleting student')
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+@login_required
+def get_teacher(request, id):
+    teacher = get_object_or_404(Teacher, id=id)
+    data = {
+        'address': teacher.address,
+        'primary_number': teacher.primary_number,
+        'secondary_number': teacher.secondary_number,
+        'dob': teacher.dob,
+        'image_url': teacher.my_image.url if teacher.my_image else None
+    }
+    return JsonResponse(data)
+
+@login_required
+def edit_teacher(request, id):
+    if request.method == 'POST':
+        teacher = get_object_or_404(Teacher, id=id)
+        try:
+            teacher.address = request.POST.get('address')
+            teacher.primary_number = request.POST.get('primary_number')
+            teacher.secondary_number = request.POST.get('secondary_number')
+            teacher.dob = request.POST.get('dob')
+            
+            if 'my_image' in request.FILES:
+                teacher.my_image = request.FILES['my_image']
+            
+            teacher.save()
+            messages.success(request, 'Teacher updated successfully')
+            return JsonResponse({'success': True})
+        except Exception as e:
+            messages.error(request, 'Error updating teacher')
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+@login_required
+def delete_teacher(request, id):
+    if request.method == 'POST':
+        teacher = get_object_or_404(Teacher, id=id)
+        try:
+            teacher.delete()
+            messages.success(request, 'Teacher deleted successfully')
+            return JsonResponse({'success': True})
+        except Exception as e:
+            messages.error(request, 'Error deleting teacher')
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})

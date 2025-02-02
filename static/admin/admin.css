@@ -917,3 +917,597 @@ table thead tr {
 .sidebar .nav-section:last-child a.logout-btn:hover {
   background: rgba(227, 24, 55, 0.1);
 }
+
+/* Sidebar Menu Item Styles */
+.sidebar-nav li {
+  position: relative;
+}
+
+.iocn-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  transition: all 0.3s ease;
+}
+
+.iocn-link a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text-primary);
+  padding: 12px 0;
+  transition: all 0.3s ease;
+}
+
+.iocn-link i {
+  font-size: 20px;
+  min-width: 24px;
+  transition: all 0.3s ease;
+}
+
+.iocn-link .arrow {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+  color: var(--text-secondary);
+}
+
+/* Sub Menu Styles */
+.sub-menu {
+  padding-left: 51px; /* 15px + 24px + 12px from parent padding and icon */
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.sub-menu li {
+  margin: 6px 0;
+}
+
+.sub-menu a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  padding: 8px 0;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.sub-menu a::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+/* Hover States */
+.iocn-link:hover a {
+  color: var(--secondary);
+}
+
+.iocn-link:hover i {
+  color: var(--secondary);
+}
+
+.sub-menu a:hover {
+  color: var(--secondary);
+  transform: translateX(5px);
+}
+
+.sub-menu a:hover::before {
+  background-color: var(--secondary);
+}
+
+/* Active States */
+.sidebar-nav li.active .iocn-link a,
+.sidebar-nav li.active .iocn-link i {
+  color: var(--secondary);
+}
+
+.sidebar-nav li.active .sub-menu {
+  max-height: 200px;
+}
+
+.sidebar-nav li.active .arrow {
+  transform: rotate(-180deg);
+  color: var(--secondary);
+}
+
+.sub-menu li.active a {
+  color: var(--secondary);
+}
+
+.sub-menu li.active a::before {
+  background-color: var(--secondary);
+  transform: scale(1.5);
+}
+
+/* Collapsed Sidebar States */
+.sidebar.collapsed .iocn-link {
+  padding: 0 10px;
+}
+
+.sidebar.collapsed .link_name,
+.sidebar.collapsed .arrow {
+  display: none;
+}
+
+.sidebar.collapsed .sub-menu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  margin-top: 0;
+  padding: 10px 20px;
+  border-radius: 0 6px 6px 0;
+  opacity: 0;
+  display: block;
+  pointer-events: none;
+  transition: 0s;
+  background: var(--white);
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar.collapsed li:hover .sub-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transition: all 0.3s ease;
+}
+
+/* Animation for sub-menu items */
+.sub-menu li {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+  transition-delay: calc(0.1s * var(--i));
+}
+
+.sidebar-nav li.active .sub-menu li {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Add hover effect for the entire menu item */
+.sidebar-nav > li {
+  margin: 5px 0;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.sidebar-nav > li:hover {
+  background: rgba(0, 164, 189, 0.1);
+}
+
+/* Custom styling for the list icon */
+.bx-list-ul {
+  position: relative;
+}
+
+.bx-list-ul::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--secondary);
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+}
+
+.sidebar-nav li:hover .bx-list-ul::after,
+.sidebar-nav li.active .bx-list-ul::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Add these styles for the submenu */
+.nav-section li .sub-menu {
+  display: none;
+  padding-left: 3rem;
+  margin-top: 0.5rem;
+}
+
+.nav-section li:hover .sub-menu,
+.nav-section li.active .sub-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-section .sub-menu li a {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.nav-section .sub-menu li a:hover {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
+.nav-section .sub-menu li a i {
+  font-size: 1rem;
+}
+
+/* Active state for submenu items */
+.nav-section .sub-menu li.active a {
+  background: rgba(255, 255, 255, 0.15);
+  opacity: 1;
+}
+
+/* Collapsed state handling */
+.sidebar.collapsed .nav-section li .sub-menu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 200px;
+  background: var(--primary);
+  padding: 0.5rem;
+  border-radius: 0 8px 8px 0;
+  display: none;
+}
+
+.sidebar.collapsed .nav-section li:hover .sub-menu {
+  display: flex;
+}
+
+/* Animation for submenu items */
+.nav-section .sub-menu li {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+}
+
+.nav-section li:hover .sub-menu li,
+.nav-section li.active .sub-menu li {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: calc(0.05s * var(--i));
+}
+
+/* Dropdown Menu Styles */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--white);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.dropdown-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-toggle i {
+  font-size: 1.25rem;
+}
+
+.dropdown-toggle span {
+  margin-left: 12px;
+  flex: 1;
+}
+
+.dropdown-toggle .bx-chevron-down {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+.dropdown.active .bx-chevron-down {
+  transform: rotate(-180deg);
+}
+
+.dropdown-menu {
+  display: none;
+  padding-left: 3rem;
+  margin-top: 0.5rem;
+}
+
+.dropdown.active .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--white);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.dropdown-menu li a:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.dropdown-menu li a i {
+  font-size: 1.1rem;
+}
+
+/* Handle collapsed sidebar */
+.sidebar.collapsed .dropdown-menu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 200px;
+  background: var(--primary);
+  padding: 0.5rem;
+  border-radius: 0 8px 8px 0;
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar.collapsed .dropdown-toggle .bx-chevron-down {
+  display: none;
+}
+
+/* Menu Item Styles */
+.menu-item {
+  position: relative;
+  list-style: none;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--white);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.menu-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.menu-link i {
+  font-size: 1.25rem;
+}
+
+.menu-link span {
+  margin-left: 12px;
+  flex: 1;
+}
+
+.menu-link .arrow {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+.menu-item.active .arrow {
+  transform: rotate(-180deg);
+}
+
+/* Submenu Styles */
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  padding-left: 3rem;
+  transition: max-height 0.3s ease;
+}
+
+.menu-item.active .submenu {
+  max-height: 200px;
+}
+
+.submenu li a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--white);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.submenu li a:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.submenu li a i {
+  font-size: 1.1rem;
+}
+
+/* Handle collapsed sidebar */
+.sidebar.collapsed .submenu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 200px;
+  background: var(--primary);
+  padding: 0.5rem;
+  border-radius: 0 8px 8px 0;
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar.collapsed .menu-item:hover .submenu {
+  display: block;
+}
+
+.sidebar.collapsed .menu-link .arrow {
+  display: none;
+}
+
+/* Navigation Items */
+.nav-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--white);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link i {
+  font-size: 1.25rem;
+}
+
+.nav-link span {
+  margin-left: 12px;
+  flex: 1;
+}
+
+.nav-link .bx-chevron-down {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+/* Submenu */
+.submenu {
+  height: 0;
+  overflow: hidden;
+  padding-left: 3rem;
+  transition: height 0.3s ease;
+}
+
+.nav-item.active .submenu {
+  height: auto;
+}
+
+.nav-item.active .bx-chevron-down {
+  transform: rotate(-180deg);
+}
+
+.submenu li a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--white);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.submenu li a:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.submenu li a i {
+  font-size: 1.1rem;
+}
+
+/* Nav Dropdown Styles */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--white);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.nav-dropdown-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-dropdown-toggle i {
+  font-size: 1.25rem;
+}
+
+.nav-dropdown-toggle span {
+  margin-left: 12px;
+  flex: 1;
+}
+
+.nav-dropdown-toggle .bx-chevron-down {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+.nav-dropdown.show .bx-chevron-down {
+  transform: rotate(-180deg);
+}
+
+.nav-dropdown-menu {
+  max-height: 0;
+  overflow: hidden;
+  padding-left: 3rem;
+  transition: max-height 0.3s ease;
+}
+
+.nav-dropdown.show .nav-dropdown-menu {
+  max-height: 200px;
+}
+
+.nav-dropdown-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--white);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.nav-dropdown-menu li a:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.nav-dropdown-menu li a i {
+  font-size: 1.1rem;
+}
+
+/* Handle collapsed sidebar */
+.sidebar.collapsed .nav-dropdown-menu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 200px;
+  background: var(--primary);
+  padding: 0.5rem;
+  border-radius: 0 8px 8px 0;
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar.collapsed .nav-dropdown-toggle .bx-chevron-down {
+  display: none;
+}

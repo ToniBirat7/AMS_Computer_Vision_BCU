@@ -195,50 +195,50 @@
   </div>
 </div>
 
-<!-- Remove the old toast container and add this -->
-<div class="floating-messages-container"></div>
+<!-- Add this after the form container -->
+<div class="message-container">
+  <!-- Error Messages -->
+  {% if form.errors %}
+  {% for field, errors in form.errors.items %}
+  {% if field != '__all__' %}
+  {% for error in errors %}
+  <div class="message-item error">
+    <i class='bx bx-error-circle'></i>
+    <span>{{ field|title }}: {{ error }}</span>
+    <button class="close-btn" aria-label="Close">
+      <i class='bx bx-x'></i>
+    </button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endfor %}
 
-{% if form.errors %}
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Handle field-specific errors
-    {% for field, errors in form.errors.items %}
-    {% if field != '__all__' %} {# Skip non - field errors # }
-    {% for error in errors %}
-    window.messageSystem.error(
-      '{{ field|title }} Error',
-      '{{ error|escapejs }}'
-    );
-    {% endfor %}
-    {% endif %}
-    {% endfor %}
+  {% if form.non_field_errors %}
+  {% for error in form.non_field_errors %}
+  <div class="message-item error">
+    <i class='bx bx-error-circle'></i>
+    <span>{{ error }}</span>
+    <button class="close-btn" aria-label="Close">
+      <i class='bx bx-x'></i>
+    </button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endif %}
 
-    // Handle non-field errors (form-wide errors)
-    {% if form.non_field_errors %}
-    {% for error in form.non_field_errors %}
-    window.messageSystem.error(
-      'Form Error',
-      '{{ error|escapejs }}'
-    );
-    {% endfor %}
-    {% endif %}
-  });
-</script>
-{% endif %}
-
-<!-- Handle Django messages (success/info messages) -->
-{% if messages %}
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    {% for message in messages %}
-    window.messageSystem.{% if message.tags == 'error' %}error{% else %} { { message.tags } } {% endif %} (
-      '{{ message.tags|title }}',
-      '{{ message|escapejs }}'
-    );
-    {% endfor %}
-  });
-</script>
-{% endif %}
+  <!-- Success Messages -->
+  {% if messages %}
+  {% for message in messages %}
+  <div class="message-item {{ message.tags }}">
+    <i class='bx {% if message.tags == "success" %}bx-check-circle{% else %}bx-error-circle{% endif %}'></i>
+    <span>{{ message }}</span>
+    <button class="close-btn" aria-label="Close">
+      <i class='bx bx-x'></i>
+    </button>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
 
 {% endblock %}
 

@@ -93,6 +93,33 @@
             </li>
           </ul>
         </div>
+
+        <div class="nav-section">
+          <h3>Lists</h3>
+          <ul>
+            <li class="nav-dropdown">
+              <div class="nav-dropdown-toggle">
+                <i class='bx bx-list-ul'></i>
+                <span>Lists</span>
+                <i class='bx bx-chevron-down'></i>
+              </div>
+              <ul class="nav-dropdown-menu">
+                <li>
+                  <a href="{% url 'list-students' %}">
+                    <i class='bx bxs-graduation'></i>
+                    <span>Students List</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'list-teachers' %}">
+                    <i class='bx bxs-user-detail'></i>
+                    <span>Teachers List</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </nav>
     </aside>
 

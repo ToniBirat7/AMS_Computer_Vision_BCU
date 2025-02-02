@@ -220,4 +220,49 @@ window.addEventListener('scroll', () => {
         }
     });
 })
+
+// Handle nav dropdown
+const navDropdowns = document.querySelectorAll('.nav-dropdown-toggle');
+
+navDropdowns.forEach(dropdown => {
+    dropdown.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const parent = this.closest('.nav-dropdown');
+        const isSidebarCollapsed = document.querySelector('.sidebar').classList.contains('collapsed');
+        
+        if (!isSidebarCollapsed) {
+            // Close other dropdowns
+            navDropdowns.forEach(other => {
+                const otherParent = other.closest('.nav-dropdown');
+                if (otherParent !== parent && otherParent.classList.contains('show')) {
+                    otherParent.classList.remove('show');
+                }
+            });
+            
+            // Toggle current dropdown
+            parent.classList.toggle('show');
+        }
+    });
+});
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.nav-dropdown')) {
+        document.querySelectorAll('.nav-dropdown.show').forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+    }
+});
+
+// Set active dropdown based on current URL
+const currentPath = window.location.pathname;
+document.querySelectorAll('.nav-dropdown-menu a').forEach(link => {
+    if (link.getAttribute('href') === currentPath) {
+        const dropdown = link.closest('.nav-dropdown');
+        dropdown.classList.add('show');
+    }
+});
+});
 });
