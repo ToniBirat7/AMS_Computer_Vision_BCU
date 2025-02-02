@@ -52,23 +52,28 @@ sidebar.addEventListener('click', function(e) {
     e.stopPropagation();
 });
 
-// Add hover effect for collapsed sidebar items
+// Improve hover handling for sidebar items
 const sidebarItems = document.querySelectorAll('.sidebar-nav li a');
 sidebarItems.forEach(item => {
-    const tooltip = item.querySelector('span');
-    if (tooltip) {
-        item.addEventListener('mouseenter', function() {
-            if (sidebar.classList.contains('collapsed')) {
-                tooltip.style.opacity = '1';
-                tooltip.style.visibility = 'visible';
+    item.addEventListener('mouseenter', function() {
+        if (sidebar.classList.contains('collapsed')) {
+            const span = this.querySelector('span');
+            if (span) {
+                span.style.opacity = '1';
+                span.style.visibility = 'visible';
             }
-        });
-        
-        item.addEventListener('mouseleave', function() {
-            tooltip.style.opacity = '0';
-            tooltip.style.visibility = 'hidden';
-        });
-    }
+        }
+    });
+    
+    item.addEventListener('mouseleave', function() {
+        if (sidebar.classList.contains('collapsed')) {
+            const span = this.querySelector('span');
+            if (span) {
+                span.style.opacity = '0';
+                span.style.visibility = 'hidden';
+            }
+        }
+    });
 });
 
 // Handle active state of sidebar items
