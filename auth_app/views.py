@@ -4,9 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .forms import LoginForm, UserRegistrationForm, TeacherForm, StudentForm, CourseForm, StudentClassForm
-from .models import Teacher, Student, Course, StudentClass
+from .models import Teacher, Student, Course, StudentClass, Attendance
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from datetime import datetime, timedelta
+from django.db.models import Q
 
 def login_page(request):
     next = request.GET.get('next')
@@ -354,3 +358,88 @@ def delete_teacher(request, id):
             'success': False,
             'error': str(e)
         }, status=500)
+
+@login_required
+def student_report_view(request):
+    return render(request, 'auth/student_report.html')
+
+@login_required
+def get_student_report(request, student_id):
+    try:
+        student = Student.objects.get(id=student_id)
+        
+        # Get student's courses through StudentClass
+        student_classes = StudentClass.objects.filter(student=student)
+        
+        # Calculate attendance for each course
+        courses_data = []
+        total_present = 0
+        total_absent = 0
+        
+        for sc in student_classes:
+            course = sc.course
+            # Using the correct field name 'stats' instead of 'status'
+            present_days = Attendance.objects.filter(
+                student=student,
+                course=course,
+                stats='P'
+            ).count()
+            
+            absent_days = Attendance.objects.filter(
+                student=student,
+                course=course,
+                stats='A'
+            ).count()
+            
+            total_days = present_days + absent_days
+            
+            attendance_rate = (present_days / total_days * 100) if total_days > 0 else 0
+            
+            courses_data.append({
+                'title': course.title,
+                'present_days': present_days,
+                'absent_days': absent_days,
+                'attendance_rate': round(attendance_rate, 1)
+            })
+            
+            total_present += present_days
+            total_absent += absent_days
+
+        # Calculate monthly attendance for the chart using correct field names
+        monthly_attendance = (
+            Attendance.objects.filter(student=student)
+            .annotate(month=TruncMonth('today_date'))  # Using today_date instead of date
+            .values('month')
+            .annotate(
+                present=Count('id', filter=Q(stats='P')),  # Using stats='P' instead of status='present'
+                total=Count('id')
+            )
+            .order_by('month')
+        )
+
+        monthly_data = []
+        for ma in monthly_attendance:
+            rate = (ma['present'] / ma['total'] * 100) if ma['total'] > 0 else 0
+            monthly_data.append({
+                'month': ma['month'].strftime('%B %Y'),
+                'rate': round(rate, 1)
+            })
+
+        # Calculate overall attendance rate
+        total_days = total_present + total_absent
+        overall_rate = (total_present / total_days * 100) if total_days > 0 else 0
+
+        return JsonResponse({
+            'id': student.id,
+            'name': student.name,
+            'courses': courses_data,
+            'total_present': total_present,
+            'total_absent': total_absent,
+            'attendance_rate': round(overall_rate, 1),
+            'monthly_attendance': monthly_data
+        })
+
+    except Student.DoesNotExist:
+        return JsonResponse({'error': 'Student not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

@@ -1,0 +1,98 @@
+{% extends 'auth/admin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/student_report.css' %}">
+{% endblock %}
+
+{% block content %}
+<header class="content-header">
+  <div class="header-title">
+    <h1>Student Progress Report</h1>
+    <p>View detailed attendance and performance reports</p>
+  </div>
+</header>
+
+<section class="report-section">
+  <!-- Search Student Form -->
+  <div class="search-container">
+    <form id="studentSearchForm" class="search-form">
+      <div class="search-input">
+        <i class='bx bx-search'></i>
+        <input type="text" 
+               name="student_id" 
+               placeholder="Enter Student ID..."
+               required>
+      </div>
+      <button type="submit" class="search-btn">
+        <i class='bx bx-search-alt'></i>
+        Search
+      </button>
+    </form>
+  </div>
+
+  <!-- Student Details Container (Initially Hidden) -->
+  <div id="studentDetails" class="student-details hidden">
+    <div class="profile-header">
+      <div class="profile-image">
+        <i class='bx bxs-user-circle'></i>
+      </div>
+      <div class="profile-info">
+        <h2 class="student-name"><!-- Filled by JS --></h2>
+        <p class="student-id"><!-- Filled by JS --></p>
+      </div>
+    </div>
+
+    <!-- Course Progress Cards -->
+    <div class="progress-grid">
+      <!-- Cards will be added by JavaScript -->
+    </div>
+
+    <!-- Attendance Overview -->
+    <div class="attendance-overview">
+      <h3>Attendance Overview</h3>
+      <div class="attendance-stats">
+        <div class="stat-item present">
+          <i class='bx bxs-calendar-check'></i>
+          <div class="stat-info">
+            <span class="stat-value"><!-- Filled by JS --></span>
+            <span class="stat-label">Present Days</span>
+          </div>
+        </div>
+        <div class="stat-item absent">
+          <i class='bx bxs-calendar-x'></i>
+          <div class="stat-info">
+            <span class="stat-value"><!-- Filled by JS --></span>
+            <span class="stat-label">Absent Days</span>
+          </div>
+        </div>
+        <div class="stat-item percentage">
+          <i class='bx bxs-pie-chart-alt-2'></i>
+          <div class="stat-info">
+            <span class="stat-value"><!-- Filled by JS --></span>
+            <span class="stat-label">Attendance Rate</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly Attendance Chart -->
+    <div class="attendance-chart">
+      <h3>Monthly Attendance</h3>
+      <canvas id="monthlyAttendanceChart"></canvas>
+    </div>
+  </div>
+
+  <!-- No Results Message -->
+  <div id="noResults" class="no-results hidden">
+    <i class='bx bx-search-alt'></i>
+    <h3>No Student Found</h3>
+    <p>Please check the student ID and try again</p>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'admin/student_report.js' %}"></script>
+{% endblock %}
