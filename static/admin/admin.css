@@ -572,7 +572,7 @@ table thead tr {
 /* Sidebar Toggle Button */
 .sidebar-toggle {
   position: absolute;
-  top: 50%;
+  top: 59%;
   right: 1rem;
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.1);
@@ -594,7 +594,8 @@ table thead tr {
 }
 
 .sidebar-toggle i {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+  transition: transform 0.3s ease;
 }
 
 /* Collapsed State */
@@ -612,7 +613,8 @@ table thead tr {
 }
 
 .sidebar.collapsed .sidebar-toggle {
-  right: 0.5rem;
+  right: 0.75rem;
+  top: 53%;
 }
 
 .sidebar.collapsed .sidebar-header h2,
@@ -1370,7 +1372,7 @@ table thead tr {
 
   .sidebar-toggle {
     position: fixed;
-    top: 1rem;
+    top: 1.5rem;
     left: 1rem;
     right: auto;
     transform: none;
