@@ -1,52 +1,64 @@
 const currentPath = window.location.pathname;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Sidebar toggle functionality
     const sidebar = document.querySelector('.sidebar');
     const mainContent = document.querySelector('.main-content');
     const sidebarToggle = document.querySelector('.sidebar-toggle');
-    const toggleIcon = sidebarToggle.querySelector('i');
-    let isMobile = window.innerWidth <= 768;
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    document.body.appendChild(overlay);
+
+    // Function to check if mobile view
+    function isMobileView() {
+        return window.innerWidth <= 992;
+    }
 
     // Function to handle sidebar toggle
-    function toggleSidebar(e) {
-        e.stopPropagation();
-        if (isMobile) {
+    function toggleSidebar() {
+        if (isMobileView()) {
             sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+            document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
         } else {
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('expanded');
         }
-        
-        // Update toggle icon
-        if (sidebar.classList.contains('collapsed') || sidebar.classList.contains('show')) {
-            toggleIcon.classList.remove('bx-menu');
-            toggleIcon.classList.add('bx-x');
-        } else {
-            toggleIcon.classList.remove('bx-x');
-            toggleIcon.classList.add('bx-menu');
-        }
     }
 
     // Toggle sidebar on button click
-    sidebarToggle.addEventListener('click', toggleSidebar);
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', toggleSidebar);
+    }
+
+    // Close sidebar when clicking overlay
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('show');
+        overlay.classList.remove('show');
+        document.body.style.overflow = '';
+    });
 
     // Handle window resize
-    window.addEventListener('resize', function() {
-        isMobile = window.innerWidth <= 768;
-        if (isMobile) {
-            sidebar.classList.remove('collapsed');
-            mainContent.classList.remove('expanded');
-        }
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (!isMobileView() && sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }, 250);
     });
 
     // Close sidebar when clicking outside on mobile
     document.addEventListener('click', function(e) {
-        if (isMobile && 
+        if (isMobileView() && 
             !sidebar.contains(e.target) && 
             !sidebarToggle.contains(e.target) && 
             sidebar.classList.contains('show')) {
             sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+            document.body.style.overflow = '';
         }
     });
 
@@ -54,6 +66,38 @@ document.addEventListener('DOMContentLoaded', function() {
     sidebar.addEventListener('click', function(e) {
         e.stopPropagation();
     });
+
+    // Add touch support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    document.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, false);
+
+    function handleSwipe() {
+        const swipeThreshold = 100;
+        const swipeLength = touchEndX - touchStartX;
+
+        if (Math.abs(swipeLength) > swipeThreshold) {
+            if (swipeLength > 0 && !sidebar.classList.contains('show')) {
+                // Swipe right to open
+                sidebar.classList.add('show');
+                overlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            } else if (swipeLength < 0 && sidebar.classList.contains('show')) {
+                // Swipe left to close
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }
+    }
 
     // Improve hover handling for sidebar items
     const sidebarItems = document.querySelectorAll('.sidebar-nav li a');
