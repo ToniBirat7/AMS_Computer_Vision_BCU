@@ -11,6 +11,11 @@ from django.db.models import Count
 from django.db.models.functions import TruncMonth
 from datetime import datetime, timedelta
 from django.db.models import Q
+import matplotlib.pyplot as plt
+import numpy as np
+import io
+import base64
+from sklearn.ensemble import RandomForestClassifier
 
 def login_page(request):
     next = request.GET.get('next')
@@ -442,4 +447,106 @@ def get_student_report(request, student_id):
     except Student.DoesNotExist:
         return JsonResponse({'error': 'Student not found'}, status=404)
     except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def predict_performance(request, student_id):
+    try:
+        student = Student.objects.get(id=student_id)
+        
+        # Set matplotlib to non-interactive backend
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        
+        # Generate dummy historical data
+        dates = [datetime.now() - timedelta(days=x) for x in range(90, 0, -1)]
+        attendance_rates = np.random.normal(85, 5, 90)  # Mean 85%, std 5%
+        attendance_rates = np.clip(attendance_rates, 0, 100)
+        
+        # Generate dummy exam scores
+        exam_scores = np.random.normal(75, 10, 5)  # Mean 75%, std 10%
+        exam_scores = np.clip(exam_scores, 0, 100)
+        
+        # Calculate features for prediction
+        avg_attendance = np.mean(attendance_rates)
+        avg_score = np.mean(exam_scores)
+        trend = np.polyfit(range(len(attendance_rates)), attendance_rates, 1)[0]
+        
+        # Dummy prediction logic
+        if avg_attendance >= 90 and avg_score >= 80:
+            predicted_grade = 'A'
+            confidence = 95
+        elif avg_attendance >= 75 and avg_score >= 65:
+            predicted_grade = 'B'
+            confidence = 85
+        else:
+            predicted_grade = 'C'
+            confidence = 75
+            
+        # Generate prediction visualization
+        plt.style.use('default')  # Use default style instead of seaborn
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
+        
+        # Set custom colors
+        primary_color = '#003b5c'
+        secondary_color = '#00a4bd'
+        
+        # Customize figure appearance
+        fig.patch.set_facecolor('#f5f7fa')
+        for ax in [ax1, ax2]:
+            ax.set_facecolor('#ffffff')
+            ax.grid(True, linestyle='--', alpha=0.7)
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+        
+        # Plot attendance trend
+        ax1.plot(dates, attendance_rates, label='Daily Attendance', 
+                color=secondary_color, alpha=0.6)
+        ax1.plot(dates, np.poly1d(np.polyfit(range(len(dates)), 
+                attendance_rates, 1))(range(len(dates))),
+                label='Trend', linestyle='--', color=primary_color)
+        ax1.set_title('Performance Analysis', fontsize=12, pad=15)
+        ax1.set_ylabel('Attendance Rate (%)')
+        ax1.legend(frameon=True, facecolor='white', framealpha=1)
+        
+        # Format dates on x-axis
+        ax1.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%Y-%m-%d'))
+        plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
+        
+        # Plot exam scores
+        exam_dates = [dates[0], dates[20], dates[40], dates[60], dates[80]]
+        ax2.plot(exam_dates, exam_scores, 'o-', label='Exam Scores', 
+                color=secondary_color, linewidth=2, markersize=8)
+        ax2.set_ylabel('Score (%)')
+        ax2.legend(frameon=True, facecolor='white', framealpha=1)
+        
+        # Format dates on x-axis for second plot
+        ax2.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%Y-%m-%d'))
+        plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45, ha='right')
+        
+        # Adjust layout and save to buffer
+        plt.tight_layout()
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png', dpi=300, bbox_inches='tight', 
+                   facecolor=fig.get_facecolor(), edgecolor='none')
+        buffer.seek(0)
+        chart_image = base64.b64encode(buffer.getvalue()).decode()
+        
+        # Clean up
+        plt.close('all')
+        
+        return JsonResponse({
+            'predicted_grade': predicted_grade,
+            'confidence': confidence,
+            'attendance_rate': round(avg_attendance, 1),
+            'present_days': int(len(attendance_rates) * avg_attendance / 100),
+            'course_performance': 'Good' if avg_score >= 70 else 'Average',
+            'chart_image': chart_image
+        })
+        
+    except Student.DoesNotExist:
+        return JsonResponse({'error': 'Student not found'}, status=404)
+    except Exception as e:
+        print(e)
         return JsonResponse({'error': str(e)}, status=500)

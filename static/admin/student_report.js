@@ -108,4 +108,74 @@ document.addEventListener('DOMContentLoaded', function() {
     }, { threshold: 0.1 });
 
     observer.observe(studentDetails);
+
+    // Prediction Button Handler
+    const predictButton = document.getElementById('predictButton');
+    const predictionResult = document.getElementById('predictionResult');
+    const closePredictionBtn = document.getElementById('closePrediction');
+    const downloadChartBtn = document.getElementById('downloadChart');
+
+    predictButton.addEventListener('click', async function() {
+        const studentId = document.querySelector('.student-id').textContent.replace('ID: ', '');
+        try {
+            const response = await fetch(`/predict-performance/${studentId}/`);
+            const data = await response.json();
+
+            if (response.ok) {
+                updatePredictionUI(data);
+                predictionResult.classList.remove('hidden');
+                predictionResult.classList.add('slide-in');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+    function updatePredictionUI(data) {
+        // Update grade and confidence
+        document.getElementById('predictedGrade').textContent = data.predicted_grade;
+        document.getElementById('confidenceScore').textContent = `${data.confidence}%`;
+        
+        // Update stats
+        document.getElementById('attendanceRate').textContent = `${data.attendance_rate}%`;
+        document.getElementById('presentDays').textContent = data.present_days;
+        document.getElementById('coursePerf').textContent = data.course_performance;
+
+        // Update prediction chart image
+        const predictionChart = document.getElementById('predictionChart');
+        predictionChart.src = `data:image/png;base64,${data.chart_image}`;
+
+        // Add animation class to stats cards
+        document.querySelectorAll('.stat-card').forEach((card, index) => {
+            setTimeout(() => {
+                card.classList.add('slide-in');
+            }, index * 100);
+        });
+
+        // Update grade badge color based on grade
+        const gradeBadge = document.querySelector('.grade-badge');
+        const gradeColors = {
+            'A': 'var(--success)',
+            'B': 'var(--secondary)',
+            'C': 'var(--accent)'
+        };
+        gradeBadge.style.background = gradeColors[data.predicted_grade] || 'var(--primary)';
+    }
+
+    // Close prediction result
+    closePredictionBtn.addEventListener('click', function() {
+        predictionResult.classList.add('hidden');
+        predictionResult.classList.remove('slide-in');
+    });
+
+    // Download chart
+    downloadChartBtn.addEventListener('click', function() {
+        const chartImage = document.getElementById('predictionChart').src;
+        const downloadLink = document.createElement('a');
+        downloadLink.href = chartImage;
+        downloadLink.download = 'performance_prediction.png';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    });
 }); 

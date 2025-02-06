@@ -19,10 +19,7 @@
     <form id="studentSearchForm" class="search-form">
       <div class="search-input">
         <i class='bx bx-search'></i>
-        <input type="text" 
-               name="student_id" 
-               placeholder="Enter Student ID..."
-               required>
+        <input type="text" name="student_id" placeholder="Enter Student ID..." required>
       </div>
       <button type="submit" class="search-btn">
         <i class='bx bx-search-alt'></i>
@@ -80,6 +77,53 @@
     <div class="attendance-chart">
       <h3>Monthly Attendance</h3>
       <canvas id="monthlyAttendanceChart"></canvas>
+    </div>
+
+    <!-- Add new Prediction Section -->
+    <div class="prediction-section">
+      <button id="predictButton" class="predict-btn">
+        <i class='bx bx-line-chart'></i>
+        Predict Future Performance
+      </button>
+
+      <div id="predictionResult" class="prediction-result hidden">
+        <div class="prediction-header">
+          <h3>Performance Prediction</h3>
+          <span class="grade-badge">Grade <span id="predictedGrade">A</span></span>
+        </div>
+
+        <div class="prediction-details">
+          <div class="prediction-chart">
+            <img id="predictionChart" src="" alt="Prediction Chart">
+          </div>
+
+          <div class="prediction-stats">
+            <div class="stat-card">
+              <h4>Confidence Score</h4>
+              <p id="confidenceScore">95%</p>
+            </div>
+            <div class="stat-card">
+              <h4>Based on</h4>
+              <ul>
+                <li>Attendance Rate: <span id="attendanceRate">85%</span></li>
+                <li>Present Days: <span id="presentDays">45</span></li>
+                <li>Course Performance: <span id="coursePerf">Good</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="prediction-actions">
+          <button id="downloadChart" class="download-btn">
+            <i class='bx bx-download'></i>
+            Download Report
+          </button>
+          <button id="closePrediction" class="close-btn">
+            <i class='bx bx-x'></i>
+            Close
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
