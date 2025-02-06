@@ -199,28 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle action buttons
-    const actionButtons = document.querySelectorAll('.action-buttons button');
-    actionButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const action = this.classList.contains('edit-btn') ? 'edit' : 'delete';
-            const row = this.closest('tr');
-            const id = row.querySelector('td:first-child').textContent.replace('#', '');
-
-            if (action === 'edit') {
-                // Handle edit action
-                console.log('Edit student with ID:', id);
-                // Add your edit logic here
-            } else {
-                // Handle delete action
-                if (confirm('Are you sure you want to delete this student?')) {
-                    console.log('Delete student with ID:', id);
-                    // Add your delete logic here
-                }
-            }
-        });
-    });
-
     // Auto-hide messages after 3 seconds
     const messages = document.querySelectorAll('.alert');
     messages.forEach(message => {
