@@ -42,22 +42,6 @@ body {
   display: flex;
 }
 
-/* Remove the generic nav styles that are causing the conflict /
-/ Delete or comment out this block /
-/
-nav {
-position: relative;
-top: 0;
-bottom: 0;
-height: 100vh;
-left: 0;
-background: #fff;
-width: 280px;
-overflow: hidden;
-box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
-}
-*/
-
 .logo {
   width: 45px;
   height: 45px;
@@ -97,37 +81,6 @@ box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
   width: 100%;
 }
 
-/* .main-skills .card{
-width: 25%;
-margin: 10px;
-background: #fff;
-text-align: center;
-border-radius: 20px;
-padding: 10px;
-box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
-}
-.main-skills .card h3{
-margin: 10px;
-text-transform: capitalize;
-}
-.main-skills .card p{
-font-size: 12px;
-}
-.main-skills .card button{
-background: orangered;
-color: #fff;
-padding: 7px 15px;
-border-radius: 10px;
-margin-top: 15px;
-cursor: pointer;
-}
-.main-skills .card button:hover{
-background: rgba(223, 70, 15, 0.856);
-}
-.main-skills .card i{
-font-size: 22px;
-padding: 10px;
-} */
 .main-skills .card {
   width: 25%;
   margin: 10px;
@@ -341,7 +294,180 @@ table thead tr {
 .dashboard {
   display: flex;
   min-height: 100vh;
+  background: var(--background);
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 280px;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+  background: var(--background);
+}
+
+.sidebar.collapsed + .main-content {
+  margin-left: 80px;
+}
+
+/* Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* Teacher Card */
+.teacher-card {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.teacher-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-header {
+  height: 200px;
+  overflow: hidden;
   position: relative;
+  background: var(--primary);
+}
+
+.teacher-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  color: var(--white);
+}
+
+.placeholder-image i {
+  font-size: 4rem;
+  opacity: 0.5;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-body h3 {
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.info-item i {
+  font-size: 1.2rem;
+  color: var(--secondary);
+}
+
+/* Table Styles */
+.table-container {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.data-table th {
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 500;
+}
+
+.data-table tr:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-buttons button {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-buttons .edit-btn {
+  background: var(--secondary);
+  color: var(--white);
+}
+
+.action-buttons .delete-btn {
+  background: var(--accent);
+  color: var(--white);
+}
+
+/* Course Grid */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.course-card {
+  background: var(--white);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.course-info h3 {
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.course-info p {
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
 }
 
 /* Sidebar Styles */
@@ -510,48 +636,124 @@ table thead tr {
   white-space: nowrap;
 }
 
-/* Main Content */
-.main-content {
-  margin-left: 280px;
-  padding: 2rem;
-  transition: margin-left 0.3s ease;
-  width: calc(100% - 280px);
+/* Content Header */
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
 }
 
-.main-content.expanded {
-  margin-left: 80px;
-  width: calc(100% - 80px);
+.header-title h1 {
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
 }
 
-/* Mobile Styles */
-@media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-  }
+.header-title p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
 
-  .sidebar.show {
-    transform: translateX(0);
-  }
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
 
+.stat-card {
+  background: var(--white);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+/* Data Sections */
+.data-section {
+  background: var(--white);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
   .main-content {
     margin-left: 0;
-    width: 100%;
+    padding: 1rem;
   }
 
-  .main-content.expanded {
+  .sidebar.collapsed + .main-content {
     margin-left: 0;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .content-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .header-actions {
     width: 100%;
   }
 
-  .sidebar-toggle {
-    right: 1rem;
-    position: absolute;
+  .cards-grid,
+  .course-grid {
+    grid-template-columns: 1fr;
   }
 
-  /* Remove this if you don't want toggle button to move on mobile */
-  .sidebar.show .sidebar-toggle {
-    right: 1rem;
+  .table-container {
+    overflow-x: auto;
   }
+}
+
+/* Search Box in Header */
+.header-actions .search-box {
+  display: flex;
+  align-items: center;
+  background: var(--white);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  width: 300px;
+  transition: all 0.3s ease;
+}
+
+.header-actions .search-box:focus-within {
+  border-color: var(--secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.header-actions .search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  margin-left: 0.5rem;
+  font-size: 0.95rem;
 }
 
 /* Update logout button styles */
@@ -972,4 +1174,135 @@ table thead tr {
 
 .submenu li a i {
   font-size: 1.1rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 59, 92, 0.05);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary);
+    border-radius: 10px;
+    border: 2px solid var(--white);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* Add Button Styles */
+.add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 164, 189, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.add-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 164, 189, 0.3);
+}
+
+.add-btn:hover::before {
+    opacity: 1;
+}
+
+.add-btn i,
+.add-btn span {
+    position: relative;
+    z-index: 1;
+}
+
+.add-btn i {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.add-btn:hover i {
+    transform: rotate(90deg);
+}
+
+/* Section Header with Add Button */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-header h2 i {
+    color: var(--secondary);
+    font-size: 1.8rem;
+}
+
+/* Responsive styles for add button */
+@media (max-width: 768px) {
+    .add-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .section-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .section-header .add-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Add button variations */
+.add-btn.primary {
+    background: linear-gradient(135deg, var(--primary), #005580);
+}
+
+.add-btn.secondary {
+    background: linear-gradient(135deg, var(--secondary), #008799);
+}
+
+.add-btn.accent {
+    background: linear-gradient(135deg, var(--accent), #b31329);
 }
