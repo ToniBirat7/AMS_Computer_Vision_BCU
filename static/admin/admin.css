@@ -497,6 +497,7 @@ table thead tr {
   margin-bottom: 1rem;
   min-height: 70px;
   transition: padding 0.3s ease;
+  position: relative;
 }
 
 .logo {
@@ -571,8 +572,9 @@ table thead tr {
 /* Sidebar Toggle Button */
 .sidebar-toggle {
   position: absolute;
-  top: 1.5rem;
+  top: 50%;
   right: 1rem;
+  transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.1);
   border: none;
   width: 32px;
@@ -601,8 +603,16 @@ table thead tr {
 }
 
 .sidebar.collapsed .sidebar-header {
-  padding: 1.5rem 0.5rem;
+  padding: 1.5rem 1rem;
   justify-content: center;
+}
+
+.sidebar.collapsed .logo {
+  margin-right: 0;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+  right: 0.5rem;
 }
 
 .sidebar.collapsed .sidebar-header h2,
@@ -1359,11 +1369,15 @@ table thead tr {
   }
 
   .sidebar-toggle {
-    display: flex;
     position: fixed;
     top: 1rem;
     left: 1rem;
-    z-index: 1001;
+    right: auto;
+    transform: none;
+  }
+
+  .sidebar.show .sidebar-toggle {
+    left: 240px;
   }
 
   .content-header {
