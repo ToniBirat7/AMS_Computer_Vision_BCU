@@ -2,97 +2,122 @@
 {% load custom_filters %}
 {% load static %}
 
-{% block link %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-<link rel="stylesheet" href="{% static 'student_list.css' %}">
-{% endblock %}
-{% block title %}
-<title>Student List</title>
+{% block links %}
+<link rel="stylesheet" href="{% static 'teacher/attendance.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
 {% endblock %}
 
-{% block body %}
-<div class="main">
-    <h1 class="h1">DWIT Course Attendance
-        <!-- DTL: Displaying today's date (day, month, year) dynamically -->
-        <span class="h1-span">{{today_date.day}} {{month_name}} {{today_date.year}}</span> <!-- Example date -->
-    </h1>
-    <div class="stu-table">
-        <table>
-            <thead>
-                <tr>
-                    <th class="name-col-1">Student Name</th>
+{% block title %}Take Attendance{% endblock %}
+
+{% block content %}
+<div class="attendance-container">
+    <!-- Header -->
+    <header class="attendance-header">
+        <div class="header-content">
+            <h1>
+                <i class="ri-calendar-check-line"></i>
+                Take Attendance
+            </h1>
+            <div class="course-info">
+                <h2>{{ course.title }}</h2>
+                <div class="date-display">
+                    <span class="date">{{ today_date.day }} {{ month_name }} {{ today_date.year }}</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Attendance Form -->
+    <form method="POST" class="attendance-form">
+        {% csrf_token %}
+
+        <!-- Attendance Stats -->
+        <div class="attendance-stats">
+            <div class="stat-card total">
+                <i class="ri-group-line"></i>
+                <div class="stat-info">
+                    <h3>{{ students|length }}</h3>
+                    <p>Total Students</p>
+                </div>
+            </div>
+            <div class="stat-card present" id="presentCount">
+                <i class="ri-user-follow-line"></i>
+                <div class="stat-info">
+                    <h3>0</h3>
+                    <p>Present</p>
+                </div>
+            </div>
+            <div class="stat-card absent" id="absentCount">
+                <i class="ri-user-unfollow-line"></i>
+                <div class="stat-info">
+                    <h3>0</h3>
+                    <p>Absent</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student List -->
+        <div class="student-list">
+            <!-- Past Attendance Legend -->
+            <div class="past-attendance-legend">
+                <h3>Past Week Attendance</h3>
+                <div class="legend-items">
+                    <span class="legend-item present">P - Present</span>
+                    <span class="legend-item absent">A - Absent</span>
+                    <span class="legend-item na">NA - Not Available</span>
+                </div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="students-table">
+                <div class="table-header">
+                    <div class="header-cell name-cell">Student Name</div>
                     {% for date in past_date %}
-                    <th class="date-col">{{date.day}}</th>
+                    <div class="header-cell date-cell">{{ date.day }}</div>
                     {% endfor %}
-                    <th class="missed-col">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- DTL: Start of form tag with POST method and CSRF token -->
-                <form method="POST">
-                    <!-- DTL: csrf_token was here -->
-                    {% csrf_token %}
+                    <div class="header-cell status-cell">Today</div>
+                </div>
+
+                <div class="table-body">
                     {% for item in students %}
-                    <tr>
-                        <td class="name-col">{{ item.student.name }}</td> <!-- DTL: student.student.name -->
-                        <!-- DTL: Loop through attendance report to display attendance statuses -->
+                    <div class="student-row" data-student-id="{{ item.student.id }}">
+                        <div class="name-cell">{{ item.student.name }}</div>
                         {% for date in past_date %}
-                        <td class="status-col">{{ status_dict|get_id:item.student.id|get_status:date.day }}</td>
+                        <div class="date-cell status-{{ status_dict|get_id:item.student.id|get_status:date.day }}">
+                            {{ status_dict|get_id:item.student.id|get_status:date.day }}
+                        </div>
                         {% endfor %}
-                        <td class="attend-col">
-                            <div class="input-box">
-                                <!-- DTL: Display dynamic form select options for attendance (Present/Absent) -->
-                                <select name="{{item.student.id}}" class="custom-class" required id="id_sex">
-                                    <option value="A" selected>Absent</option>
-                                    <option value="P">Present</option>
-                                </select>
+                        <div class="status-cell">
+                            <div class="status-toggle">
+                                <input type="checkbox" id="status_{{ item.student.id }}" name="{{ item.student.id }}"
+                                    value="P" class="status-checkbox">
+                                <label for="status_{{ item.student.id }}" class="toggle-label">
+                                    <span class="present">Present</span>
+                                    <span class="absent">Absent</span>
+                                </label>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                     {% endfor %}
-                    <!-- DTL: End of looping through students and attendance data -->
-            </tbody>
-        </table>
-    </div>
-    <div>
-        <button type="submit" class="primary">Submit</button>
-    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="markAllPresent()">
+                <i class="ri-check-double-line"></i>
+                Mark All Present
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="ri-save-line"></i>
+                Save Attendance
+            </button>
+        </div>
     </form>
 </div>
+{% endblock %}
 
-<!-- DTL: Toast messages were dynamically generated here -->
-<!-- <div class="toast" id="toast1">
-    <div class="toast-content">
-        <i class="fas fa-solid fa-check check"></i>
-        <div class="message">
-            <span class="text text-2">Attendance Submitted Successfully!</span>
-        </div>
-    </div>
-    <i class="fas fa-times close" id="close1"></i>
-    <div class="progress"></div>
-</div> -->
-
-<script>
-    /* JavaScript for managing toast notifications */
-    var toast1 = document.getElementById('toast1');
-    var close1 = document.getElementById('close1');
-
-    close1.addEventListener('click', function () {
-        removeToast(toast1);
-    });
-
-    setTimeout(function () {
-        removeToast(toast1);
-    }, 3000);
-
-    function removeToast(el) {
-        el.style.opacity = '0';
-        el.style.height = '0';
-        el.style.margin = '0';
-        el.style.padding = '0';
-        setTimeout(function () {
-            el.remove();
-        }, 500); // delay should match the transition duration
-    }
-</script>
+{% block scripts %}
+<script src="{% static 'teacher/attendance.js' %}"></script>
 {% endblock %}

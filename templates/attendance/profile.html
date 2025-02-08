@@ -1,182 +1,142 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block link %}
-
+{% block links %}
 <!-- Custom CSS files -->
-<link rel="stylesheet" href="{% static 'profile_style.css' %}" />
-<link rel="stylesheet" href="{% static 'profile_responsive.css' %}" />
-
-<!-- Remix Font Icons CDN -->
+<link rel="stylesheet" href="{% static 'teacher/profile.css' %}" />
+<!-- Remix Icons -->
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet" />
-<!-- Include navigation bar -->
-
 {% endblock %}
 
-{% block title %}
-<title>Teacher Profile</title>
-{% endblock %}
+{% block title %}Teacher Profile{% endblock %}
 
-{% block body %}
-<div class="body">
-    <!-- Body Main-Background -->
-    <span class="main_bg"></span>
+{% block content %}
+<div class="profile-container">
+    <!-- Profile Header -->
+    <header class="profile-header">
+        <div class="header-content">
+            <h1>Teacher Profile</h1>
+            <p>Manage your personal information and view your courses</p>
+        </div>
+    </header>
 
-    <!-- Main-Container -->
-    <div class="container">
-        <!-- Header/Navbar -->
-        <header>
-            <div class="brandLogo">
-                <figure>
-                    <img src="{% static 'images/deerwalklogo.png' %}" alt="logo" width="40px" height="40px" />
-                </figure>
-                <span> Deerwalk Institute Of Technology</span>
-            </div>
-        </header>
-        <!-- User Main-Profile -->
-        <section class="userProfile card">
-            <div class="profile">
-                <figure>
-                    <!-- If no profile image, show default image -->
-                    {% if teacher.image == 'NA' %}
-                    <img src="{% static 'images/deerwalklogo.png' %}" alt="birat" width="250px" height="250px" />
-                    <!-- Else, show profile image -->
-                    {% else %}
-                    <img src="{{teacher.image.url}}" alt="profile" width="250px" height="250px" />
-                    {% endif %}
-                </figure>
-                <div class="media-file">
-                    <form method="POST" enctype="multipart/form-data">
-                        <!-- CSRF token for form security -->
+    <div class="profile-grid">
+        <!-- Profile Card -->
+        <section class="profile-card">
+            <div class="profile-image">
+                {% if teacher.image == 'NA' %}
+                <img src="{% static 'images/Default_img.jpg' %}" alt="Default Profile" />
+                {% else %}
+                <img src="{{ teacher.image.url }}" alt="Profile Picture" />
+                {% endif %}
+
+                <div class="image-overlay">
+                    <form method="POST" enctype="multipart/form-data" id="imageForm">
                         {% csrf_token %}
-                        <!-- Render form fields as paragraph -->
-                        {{ form.as_p }}
-                        <button class="remove">
-                            <a href="{% url 'remove-image' %}">Remove</a>
-                            <!-- Replace with URL for image deletion -->
-                        </button>
-                        <button class="upload" type="submit">Upload</button>
+                        <label for="id_image" class="upload-btn">
+                            <i class="ri-camera-line"></i>
+                            <span>Change Photo</span>
+                        </label>
+                        {{ form.image }}
                     </form>
                 </div>
             </div>
-        </section>
-        <!-- Work & Skills Section -->
-        <section class="work_skills card">
-            <!-- Work Container -->
-            <div class="work">
-                <h1 class="heading">Work</h1>
-                <div class="primary">
-                    <h1>Deerwalk Institute of Technology</h1>
-                    <p>
-                        Sifal <br />
-                        Kathmandu, Nepal
-                    </p>
-                </div>
-                <br /><br />
-                <!-- Skills Container -->
-                <div class="skills">
-                    <h1 class="heading">Skills</h1>
-                    <ul>
-                        <li style="--i: 0">Android</li>
-                        <li style="--i: 1">Web-Design</li>
-                        <li style="--i: 2">UI/UX</li>
-                        <li style="--i: 3">Video Editing</li>
-                    </ul>
+
+            <div class="profile-info">
+                <h2>{{ teacher.user.get_full_name }}</h2>
+                <p class="designation">Computer Science Teacher</p>
+                <div class="location">
+                    <i class="ri-map-pin-line"></i>
+                    <span>{{ teacher.address }}</span>
                 </div>
             </div>
-        </section>
 
-        <!-- User Details Sections -->
-        <section class="userDetails card">
-            <div class="userName">
-                <h1 class="name">{{teacher.user.first_name}} {{teacher.user.last_name}}</h1>
-                <!-- Replace with user's first and last name -->
-                <div class="map">
-                    <i class="ri-map-pin-fill ri"></i>
-                    <span>{{teacher.address}}</span>
-                    <!-- Replace with user's address -->
+            <div class="profile-stats">
+                <div class="stat">
+                    <h3>{{ courses|length }}</h3>
+                    <p>Courses</p>
                 </div>
-                <h2>Courses Taught</h2>
-                <!-- Loop through courses taught by the user -->
-                {% for course in courses %}
-                <p>{{course.title}}</p>
-                {% endfor %}
-                <!-- End for -->
-            </div>
-            <br />
-        </section>
-
-        <!-- Timeline & About Sections -->
-        <section class="timeline_about card">
-            <div class="tabs">
-                <ul>
-                    <li class="about active">
-                        <i class="ri-user-3-fill ri"></i>
-                        <span>About</span>
-                    </li>
-                </ul>
+                <div class="stat">
+                    <h3>124</h3>
+                    <p>Students</p>
+                </div>
+                <div class="stat">
+                    <h3>98%</h3>
+                    <p>Rating</p>
+                </div>
             </div>
 
-            <div class="contact_info">
-                <h1 class="heading">Contact Information</h1>
-                <ul>
-                    <li class="phone">
-                        <h1 class="label">Phone:</h1>
-                        <span class="info">
-                            {{teacher.primary_number}} (Primary) <br />
-                            {{teacher.secondary_number}} (Secondary)
-                            <!-- Replace with user's phone numbers -->
-                        </span>
-                    </li>
-
-                    <li class="address">
-                        <h1 class="label">Address:</h1>
-                        <span class="info">{{teacher.address}}</span>
-                        <!-- Replace with user's address -->
-                    </li>
-
-                    <li class="email">
-                        <h1 class="label">E-mail:</h1>
-                        <span class="info">{{teacher.user.email}}</span>
-                        <!-- Replace with user's email -->
-                    </li>
-
-                    <li class="site">
-                        <h1 class="label">Social Media:</h1>
-                        <!-- Replace with user's social media links -->
-                        <a href="#"><i class="ri-facebook-circle-line"></i> &nbsp; </a>
-                        <a href="#"><i class="ri-twitter-line"></i> &nbsp; </a>
-                        <a href="#"><i class="ri-github-fill"></i> &nbsp; </a>
-                        <a href="#"><i class="ri-linkedin-box-fill"></i> &nbsp; </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="basic_info">
-                <h1 class="heading">Basic Information</h1>
-                <ul>
-                    <li class="birthday">
-                        <h1 class="label">Date Of Birth:</h1>
-                        <span class="info">{{teacher.dob}}</span>
-                        <!-- Replace with user's date of birth -->
-                    </li>
-
-                    <li class="sex">
-                        <h1 class="label">Gender:</h1>
-                        <span class="info">{{teacher.sex}}</span>
-                        <!-- Replace with user's gender -->
-                    </li>
-                </ul>
-            </div>
-            <div class="edit-profile">
-                <a href="{% url 'edit-profile' %}">
-                    <button class="button2">
-                        <i class="ri-pencil-fill"></i>Edit Profile
-                    </button>
-                    <!-- Replace with URL for editing profile -->
+            <div class="profile-actions">
+                <a href="{% url 'edit-profile' %}" class="edit-btn">
+                    <i class="ri-edit-line"></i>
+                    Edit Profile
                 </a>
+                <button class="remove-photo-btn" onclick="removePhoto()">
+                    <i class="ri-delete-bin-line"></i>
+                    Remove Photo
+                </button>
+            </div>
+        </section>
+
+        <!-- Details Section -->
+        <section class="details-section">
+            <!-- Contact Information -->
+            <div class="details-card">
+                <h3><i class="ri-contacts-line"></i> Contact Information</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Email</label>
+                        <p>{{ teacher.user.email }}</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>Primary Phone</label>
+                        <p>{{ teacher.primary_number }}</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>Secondary Phone</label>
+                        <p>{{ teacher.secondary_number }}</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>Address</label>
+                        <p>{{ teacher.address }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="details-card">
+                <h3><i class="ri-user-line"></i> Personal Information</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Date of Birth</label>
+                        <p>{{ teacher.dob }}</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>Gender</label>
+                        <p>{{ teacher.sex }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses Section -->
+            <div class="details-card">
+                <h3><i class="ri-book-line"></i> Current Courses</h3>
+                <div class="courses-list">
+                    {% for course in courses %}
+                    <div class="course-item">
+                        <div class="course-info">
+                            <h4>{{ course.title }}</h4>
+                            <p>{{ course.get_shift_display }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </section>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'teacher/profile.js' %}"></script>
 {% endblock %}

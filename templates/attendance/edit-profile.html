@@ -1,133 +1,109 @@
-{% extends 'core/base.html' %} {% load static %} {% block link %}
-<link rel="stylesheet" href="{% static 'edit-profile_new.css' %}" />
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-/>
-{% endblock %} {% block body %}
+{% extends 'core/base.html' %}
+{% load static %}
 
-<div class="main-body">
-  <section class="container">
-    <header>Edit Profile Details</header>
-    <form class="form" method="POST">
-      {% csrf_token %}
-      <!-- CSRF Token for security -->
+{% block links %}
+<link rel="stylesheet" href="{% static 'teacher/edit-profile.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+{% endblock %}
 
-      <!-- Displaying First Name (disabled) -->
-      <div class="input-box">
-        <label>First Name</label>
-        <input
-          type="text"
-          value="{{teacher.user.first_name}}"
-          required
-          disabled
-        />
-      </div>
+{% block title %}Edit Profile{% endblock %}
 
-      <!-- Displaying Last Name (disabled) -->
-      <div class="input-box">
-        <label>Last Name</label>
-        <input
-          type="text"
-          value="{{teacher.user.last_name}}"
-          required
-          disabled
-        />
-      </div>
-
-      <!-- Column containing Email and Birth Date -->
-      <div class="column">
-        <div class="input-box">
-          <label>Email Address</label>
-          <input
-            type="email"
-            value="{{teacher.user.email}}"
-            name="email"
-            required
-          />
-        </div>
-        <div class="input-box">
-          <label>Birth Date</label>
-          <!-- <input type="text" value="1990-01-01" name="DOB" required disabled /> -->
-          {{form.dob}}
-        </div>
-      </div>
-
-      <!-- Column containing Primary and Secondary Phone Numbers -->
-      <div class="column">
-        <div class="input-box">
-          <label>Phone Number (Primary)</label>
-          <!-- <input type="tel" value="1234567890" name="primary_number" required maxlength="10" minlength="10" /> -->
-          {{form.primary_number}}
-        </div>
-        <div class="input-box">
-          <label>Phone Number (Secondary)</label>
-          <!-- <input type="tel" value="0987654321" name="secondary_number" required maxlength="10" minlength="10" /> -->
-          {{form.secondary_number}}
-        </div>
-      </div>
-
-      <!-- Displaying Gender (disabled) -->
-      <div class="input-box">
-        <label for="gender">Gender</label>
-        <br />
-        {{form.sex}}
-      </div>
-
-      <!-- Address input field -->
-      <div class="input-box address">
-        <label>Address</label>
-        <!-- <input type="text" value="1234 Main St, Anytown, USA" name="address" required /> -->
-        {{form.address}}
-      </div>
-
-      <!-- Submit button -->
-      <button class="button2" type="submit">Submit</button>
-    </form>
-  </section>
-
-  <!-- Toast Message -->
-
-  {% if messages %} {% for message in messages %}
-  <div class="toast" id="toast{{ forloop.counter }}">
-    <div class="toast-content">
-      <i class="fas fa-solid fa-check check"></i>
-      <div class="message">
-        <!-- <span class="text text-1">Success!</span> -->
-        <span class="text text-2">{{message}}</span>
-      </div>
+{% block content %}
+<div class="edit-profile-container">
+  <!-- Header -->
+  <header class="edit-header">
+    <div class="header-content">
+      <h1><i class="ri-edit-2-line"></i> Edit Profile</h1>
+      <p>Update your personal information</p>
     </div>
-    <!-- <i class="fa-solid fa-xmark close"></i> -->
-    <i class="fas fa-times close" id="close{{ forloop.counter }}"></i>
-    <div class="progress"></div>
+  </header>
+
+  <!-- Edit Form -->
+  <div class="edit-form-card">
+    <form method="POST" class="edit-form">
+      {% csrf_token %}
+
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <h2><i class="ri-user-line"></i> Personal Information</h2>
+
+        <div class="form-grid">
+          <!-- Email -->
+          <div class="form-group">
+            <label for="email">
+              <i class="ri-mail-line"></i>
+              Email Address
+            </label>
+            <input type="email" id="email" name="email" value="{{ teacher.user.email }}" class="form-control"
+              minlength="5" maxlength="50">
+          </div>
+
+          <!-- Address -->
+          <div class="form-group">
+            <label for="address">
+              <i class="ri-map-pin-line"></i>
+              Address
+            </label>
+            <input type="text" id="address" name="address" value="{{ teacher.address }}" class="form-control"
+              minlength="5" maxlength="100" minlength="5" maxlength="100">
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Information Section -->
+      <div class="form-section">
+        <h2><i class="ri-contacts-line"></i> Contact Information</h2>
+
+        <div class="form-grid">
+          <!-- Primary Phone -->
+          <div class="form-group">
+            <label for="primary_number">
+              <i class="ri-phone-line"></i>
+              Primary Phone
+            </label>
+            <input type="tel" id="primary_number" name="primary_number" value="{{ teacher.primary_number }}"
+              class="form-control" pattern="[0-9]{10}" minlength="10" maxlength="10">
+          </div>
+
+          <!-- Secondary Phone -->
+          <div class="form-group">
+            <label for="secondary_number">
+              <i class="ri-phone-line"></i>
+              Secondary Phone
+            </label>
+            <input type="tel" id="secondary_number" name="secondary_number" value="{{ teacher.secondary_number }}"
+              class="form-control" pattern="[0-9]{10}" minlength="10" maxlength="10">
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <a href="{% url 'profile' %}" class="btn btn-secondary">
+          <i class="ri-arrow-left-line"></i>
+          Cancel
+        </a>
+        <button type="submit" class="btn btn-primary">
+          <i class="ri-save-line"></i>
+          Save Changes
+        </button>
+      </div>
+    </form>
   </div>
-  {%endfor%}
-
-  <script>
-    {% for message in messages %}
-    var toast{{ forloop.counter }} = document.getElementById('toast{{ forloop.counter }}');
-    var close{{ forloop.counter }} = document.getElementById('close{{ forloop.counter }}');
-
-      close{{ forloop.counter }}.addEventListener('click', function () {
-      removeToast(toast{{ forloop.counter }});
-      });
-
-    setTimeout(function () {
-      removeToast(toast{{ forloop.counter }});
-      }, 3000);
-    {% endfor %}
-
-    function removeToast(el) {
-      el.style.opacity = '0';
-      el.style.height = '0';
-      el.style.margin = '0';
-      el.style.padding = '0';
-      setTimeout(function () {
-        el.remove();
-      }, 500); // delay should match the transition duration
-    }
-  </script>
-
-  {% endif %}
 </div>
+
+{% if messages %}
+<div class="message-container">
+  {% for message in messages %}
+  <div class="message {{ message.tags }}">
+    {% if message.tags == 'success' %}
+    <i class="ri-check-line"></i>
+    {% else %}
+    <i class="ri-error-warning-line"></i>
+    {% endif %}
+    {{ message }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
 {% endblock %}
