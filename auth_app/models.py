@@ -58,10 +58,10 @@ class Student(models.Model):
         return self.name
     
 class Course(models.Model):
+    title = models.CharField(max_length=100)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    duration = models.CharField(max_length=20)
-    shift = models.CharField(max_length=1, choices=shift_choice)
-    title = models.CharField(max_length=30)
+    shift = models.CharField(max_length=50)
+    duration = models.IntegerField(help_text="Duration in weeks")
 
     def __str__(self):
         return self.title

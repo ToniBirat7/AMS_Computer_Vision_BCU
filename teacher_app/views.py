@@ -6,6 +6,7 @@ from auth_app.models import StudentClass, Attendance
 from django.contrib import messages
 import openpyxl
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 import os 
 from django.conf import settings
@@ -15,14 +16,28 @@ import calendar
 
 # Create your views here.
 
+@login_required
 def course_list(request):
-    print("Course List")
-    print(request.user.id)
-    user_id = request.user.id
-    teacher = Teacher.objects.get(user=user_id)
-    list_of_courses = Course.objects.filter(teacher=teacher).prefetch_related('teacher')
-    print(list_of_courses)
-    return render(request, 'attendance/course_list.html',{'courses':list_of_courses})
+    try:
+        teacher = Teacher.objects.get(user=request.user)
+        courses = Course.objects.filter(teacher=teacher).select_related('teacher__user')
+        
+        print(f"Found {courses.count()} courses for teacher {teacher}")
+        for course in courses:
+            print(f"Course: {course.title}, Teacher: {course.teacher.user.get_full_name()}")
+        
+        context = {
+            'courses': courses,
+        }
+        return render(request, 'attendance/course_list.html', context)
+    except Teacher.DoesNotExist:
+        print(f"No teacher profile found for user {request.user}")
+        messages.error(request, 'Teacher profile not found.')
+        return redirect('logout')
+    except Exception as e:
+        print(f"Error in course_list view: {str(e)}")
+        messages.error(request, 'An error occurred while loading courses.')
+        return redirect('logout')
 
 def download_report(request, course_id):
     try:
@@ -184,4 +199,4 @@ def choose_date(request):
     print("\n")
     print(status_dict)
 
-    return render(request,'calendar/student_list.html',{'month_name':month_name,'today_date':todays_date,'students':students,'past_date':past_date,'status_dict':status_dict})
+    return render(request,'attendance/student_list.html',{'month_name':month_name,'today_date':todays_date,'students':students,'past_date':past_date,'status_dict':status_dict})
