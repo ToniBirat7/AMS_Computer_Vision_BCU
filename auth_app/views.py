@@ -511,7 +511,7 @@ def predict_performance(request, student_id):
         prev_grade_num = grade_order.get(previous_grade)
 
         # Generate synthetic attendance data around current attendance
-        num_samples = 10
+        num_samples = 90  # Changed to match the number of days
         synthetic_attendance = np.random.normal(
             loc=current_attendance, 
             scale=5,  # Standard deviation of 5%
@@ -519,10 +519,10 @@ def predict_performance(request, student_id):
         )
         synthetic_attendance = np.clip(synthetic_attendance, 50, 100)  # Clip between 50% and 100%
 
-        # Prepare data for prediction
+        # Prepare data for prediction (use only 30 samples for prediction)
         X_pred = pd.DataFrame({
-            'Attendance': synthetic_attendance,
-            'Previous_Grade': [prev_grade_num] * num_samples
+            'Attendance': synthetic_attendance[:30],  # Use first 30 samples for prediction
+            'Previous_Grade': [prev_grade_num] * 30
         })
 
         # Make predictions
@@ -544,26 +544,44 @@ def predict_performance(request, student_id):
         primary_color = '#003b5c'
         secondary_color = '#00a4bd'
 
-        # Plot attendance trend
+        # Initialize attendance data
         dates = [record.today_date for record in attendance_records]
         attendance_rates = [100 if record.stats == 'P' else 0 for record in attendance_records]
 
-        if len(attendance_rates) >= 5:
+        # Plot attendance trend using synthetic data
+        if not attendance_records.exists() or len(attendance_rates) < 5:  # If not enough real attendance data
+            # Generate dates for synthetic data (last 90 days)
+            end_date = datetime.now()
+            start_date = end_date - timedelta(days=90)
+            synthetic_dates = [start_date + timedelta(days=x) for x in range(90)]
+            
+            # Use synthetic attendance data (now same length as dates)
+            ax1.plot(synthetic_dates, synthetic_attendance, label='Predicted Attendance', 
+                    color=secondary_color, alpha=0.6)
+            
+            # Calculate and plot moving average of synthetic data
+            window = 5
+            moving_avg = np.convolve(synthetic_attendance, np.ones(window)/window, mode='valid')
+            plot_dates = synthetic_dates[window-1:]
+            ax1.plot(plot_dates, moving_avg, label='Trend', 
+                    color=primary_color, linestyle='--')
+        else:
+            # Use real attendance data if available
             window = 5
             moving_avg = np.convolve(attendance_rates, np.ones(window)/window, mode='valid')
             plot_dates = dates[window-1:]
             ax1.plot(plot_dates, moving_avg, label='Attendance Trend', 
                     color=secondary_color, alpha=0.6)
-        else:
-            ax1.plot(dates, attendance_rates, label='Attendance', 
-                    color=secondary_color, alpha=0.6)
 
-        ax1.axhline(y=current_attendance, color=primary_color, linestyle='--', 
+        # Add average line
+        ax1.axhline(y=current_attendance, color='red', linestyle=':', 
                    label=f'Average ({current_attendance:.1f}%)')
         
+        # Customize first plot
         ax1.set_title('Attendance Pattern', fontsize=12, pad=15)
         ax1.set_ylabel('Attendance Rate (%)')
         ax1.set_ylim(0, 100)
+        ax1.grid(True, alpha=0.3)
         ax1.legend()
 
         # Format x-axis dates
