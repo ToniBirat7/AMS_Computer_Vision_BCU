@@ -16,6 +16,14 @@ import numpy as np
 import io
 import base64
 from sklearn.ensemble import RandomForestClassifier
+import json
+import matplotlib
+import pickle
+from pathlib import Path
+import pandas as pd
+import random
+from scipy import stats  # Add this import
+matplotlib.use('Agg')
 
 def login_page(request):
     next = request.GET.get('next')
@@ -449,104 +457,165 @@ def get_student_report(request, student_id):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-@login_required
+@require_POST
 def predict_performance(request, student_id):
     try:
+        # Log incoming request data
+        print("Received prediction request for student:", student_id)
+        print("Request body:", request.body.decode('utf-8'))
+        
+        # Load the trained model
+        try:
+            model_path = Path('Model/student_grade_classifier.pkl')
+            with open(model_path, 'rb') as file:
+                model = pickle.load(file)
+            print("Model loaded successfully")
+        except Exception as e:
+            print(f"Error loading model: {str(e)}")
+            return JsonResponse({'error': 'Error loading prediction model'}, status=500)
+
+        # Parse the JSON data from request body
+        data = json.loads(request.body)
+        previous_grade = data.get('previous_grade')
+        
+        if not previous_grade:
+            return JsonResponse({'error': 'Previous grade is required'}, status=400)
+
+        # Get the student
         student = Student.objects.get(id=student_id)
         
-        # Set matplotlib to non-interactive backend
-        import matplotlib
-        matplotlib.use('Agg')
-        import matplotlib.pyplot as plt
+        # Get attendance records
+        attendance_records = Attendance.objects.filter(
+            student=student,
+            today_date__gte=datetime.now() - timedelta(days=90)
+        ).select_related('course').order_by('today_date')
+
+        # Calculate current attendance rate
+        total_days = attendance_records.count()
+        present_days = attendance_records.filter(stats='P').count()
+        current_attendance = (present_days / total_days * 100) if total_days > 0 else 75  # Default to 75 if no records
+
+        # Grade mapping for model input
+        grade_order = {
+            'A+': 6, 'A': 5, 'B+': 4, 'B': 3, 
+            'C+': 2, 'C': 1, 'D+': 0, 'D': 0
+        }
+
+        # Reverse mapping for prediction output
+        reverse_grade_map = {
+            6: 'A+', 5: 'A', 4: 'B+', 3: 'B',
+            2: 'C+', 1: 'C', 0: 'D+'
+        }
+
+        # Convert previous grade to numerical value
+        prev_grade_num = grade_order.get(previous_grade)
+
+        # Generate synthetic attendance data around current attendance
+        num_samples = 10
+        synthetic_attendance = np.random.normal(
+            loc=current_attendance, 
+            scale=5,  # Standard deviation of 5%
+            size=num_samples
+        )
+        synthetic_attendance = np.clip(synthetic_attendance, 50, 100)  # Clip between 50% and 100%
+
+        # Prepare data for prediction
+        X_pred = pd.DataFrame({
+            'Attendance': synthetic_attendance,
+            'Previous_Grade': [prev_grade_num] * num_samples
+        })
+
+        # Make predictions
+        predictions = model.predict(X_pred)
+        prediction_probs = model.predict_proba(X_pred)
+
+        # Get the most common prediction and its confidence
+        predicted_grade_num = int(stats.mode(predictions)[0])
+        predicted_grade = reverse_grade_map[predicted_grade_num]
         
-        # Generate dummy historical data
-        dates = [datetime.now() - timedelta(days=x) for x in range(90, 0, -1)]
-        attendance_rates = np.random.normal(85, 5, 90)  # Mean 85%, std 5%
-        attendance_rates = np.clip(attendance_rates, 0, 100)
-        
-        # Generate dummy exam scores
-        exam_scores = np.random.normal(75, 10, 5)  # Mean 75%, std 10%
-        exam_scores = np.clip(exam_scores, 0, 100)
-        
-        # Calculate features for prediction
-        avg_attendance = np.mean(attendance_rates)
-        avg_score = np.mean(exam_scores)
-        trend = np.polyfit(range(len(attendance_rates)), attendance_rates, 1)[0]
-        
-        # Dummy prediction logic
-        if avg_attendance >= 90 and avg_score >= 80:
-            predicted_grade = 'A'
-            confidence = 95
-        elif avg_attendance >= 75 and avg_score >= 65:
-            predicted_grade = 'B'
-            confidence = 85
-        else:
-            predicted_grade = 'C'
-            confidence = 75
-            
-        # Generate prediction visualization
-        plt.style.use('default')  # Use default style instead of seaborn
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
-        
-        # Set custom colors
+        # Calculate confidence as the highest probability for the predicted grade
+        confidence = int(np.max(prediction_probs[:, predicted_grade_num]) * 100)
+
+        # Generate visualization
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
+        fig.patch.set_facecolor('#f5f7fa')
+
+        # Colors
         primary_color = '#003b5c'
         secondary_color = '#00a4bd'
-        
-        # Customize figure appearance
-        fig.patch.set_facecolor('#f5f7fa')
-        for ax in [ax1, ax2]:
-            ax.set_facecolor('#ffffff')
-            ax.grid(True, linestyle='--', alpha=0.7)
-            ax.spines['top'].set_visible(False)
-            ax.spines['right'].set_visible(False)
-        
+
         # Plot attendance trend
-        ax1.plot(dates, attendance_rates, label='Daily Attendance', 
-                color=secondary_color, alpha=0.6)
-        ax1.plot(dates, np.poly1d(np.polyfit(range(len(dates)), 
-                attendance_rates, 1))(range(len(dates))),
-                label='Trend', linestyle='--', color=primary_color)
-        ax1.set_title('Performance Analysis', fontsize=12, pad=15)
-        ax1.set_ylabel('Attendance Rate (%)')
-        ax1.legend(frameon=True, facecolor='white', framealpha=1)
+        dates = [record.today_date for record in attendance_records]
+        attendance_rates = [100 if record.stats == 'P' else 0 for record in attendance_records]
+
+        if len(attendance_rates) >= 5:
+            window = 5
+            moving_avg = np.convolve(attendance_rates, np.ones(window)/window, mode='valid')
+            plot_dates = dates[window-1:]
+            ax1.plot(plot_dates, moving_avg, label='Attendance Trend', 
+                    color=secondary_color, alpha=0.6)
+        else:
+            ax1.plot(dates, attendance_rates, label='Attendance', 
+                    color=secondary_color, alpha=0.6)
+
+        ax1.axhline(y=current_attendance, color=primary_color, linestyle='--', 
+                   label=f'Average ({current_attendance:.1f}%)')
         
-        # Format dates on x-axis
+        ax1.set_title('Attendance Pattern', fontsize=12, pad=15)
+        ax1.set_ylabel('Attendance Rate (%)')
+        ax1.set_ylim(0, 100)
+        ax1.legend()
+
+        # Format x-axis dates
         ax1.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%Y-%m-%d'))
         plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
+
+        # Grade comparison plot
+        grades = ['Previous', 'Predicted']
+        grade_values = [prev_grade_num, predicted_grade_num]
+        max_grade = 6  # Maximum grade value (A+)
         
-        # Plot exam scores
-        exam_dates = [dates[0], dates[20], dates[40], dates[60], dates[80]]
-        ax2.plot(exam_dates, exam_scores, 'o-', label='Exam Scores', 
-                color=secondary_color, linewidth=2, markersize=8)
-        ax2.set_ylabel('Score (%)')
-        ax2.legend(frameon=True, facecolor='white', framealpha=1)
+        # Convert to percentage for visualization
+        grade_percentages = [g * (100/max_grade) for g in grade_values]
         
-        # Format dates on x-axis for second plot
-        ax2.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%Y-%m-%d'))
-        plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45, ha='right')
-        
-        # Adjust layout and save to buffer
+        ax2.bar(grades, grade_percentages, color=[secondary_color, primary_color])
+        ax2.set_title('Grade Comparison', fontsize=12, pad=15)
+        ax2.set_ylabel('Grade Level (%)')
+        ax2.set_ylim(0, 100)
+
+        # Add grade labels on bars
+        for i, (v, g) in enumerate(zip(grade_percentages, [previous_grade, predicted_grade])):
+            ax2.text(i, v + 1, g, ha='center', va='bottom')
+
         plt.tight_layout()
+
+        # Save plot to buffer
         buffer = io.BytesIO()
-        plt.savefig(buffer, format='png', dpi=300, bbox_inches='tight', 
-                   facecolor=fig.get_facecolor(), edgecolor='none')
+        plt.savefig(buffer, format='png', dpi=300, bbox_inches='tight')
         buffer.seek(0)
-        chart_image = base64.b64encode(buffer.getvalue()).decode()
-        
-        # Clean up
-        plt.close('all')
-        
-        return JsonResponse({
+        image_png = buffer.getvalue()
+        buffer.close()
+        plt.close()
+
+        # Encode the image
+        graphic = base64.b64encode(image_png).decode('utf-8')
+
+        # Prepare response data
+        response_data = {
             'predicted_grade': predicted_grade,
             'confidence': confidence,
-            'attendance_rate': round(avg_attendance, 1),
-            'present_days': int(len(attendance_rates) * avg_attendance / 100),
-            'course_performance': 'Good' if avg_score >= 70 else 'Average',
-            'chart_image': chart_image
-        })
-        
+            'attendance_rate': round(current_attendance, 1),
+            'present_days': present_days,
+            'course_performance': 'Good' if current_attendance >= 80 else 'Average',
+            'chart_image': graphic
+        }
+
+        return JsonResponse(response_data)
+
     except Student.DoesNotExist:
         return JsonResponse({'error': 'Student not found'}, status=404)
     except Exception as e:
-        print(e)
+        print(f"Error in predict_performance: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return JsonResponse({'error': str(e)}, status=500)

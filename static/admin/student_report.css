@@ -233,10 +233,11 @@
 
 /* Prediction Section */
 .prediction-section {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  text-align: center;
+  margin-top: 2rem;
+  padding: 2rem;
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
 }
 
 .predict-btn {
@@ -268,18 +269,16 @@
 /* Prediction Result Container */
 .prediction-result {
   margin-top: 2rem;
-  background: var(--white);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s ease;
+  opacity: 1;
+  transition: all 0.3s ease;
 }
 
-.prediction-result.visible {
-  opacity: 1;
-  transform: translateY(0);
+.prediction-result.hidden {
+  display: none;
+}
+
+.prediction-result.slide-in {
+  animation: slideIn 0.5s ease forwards;
 }
 
 .prediction-header {
@@ -447,4 +446,72 @@ html {
 .progress-grid,
 .attendance-chart {
   margin-bottom: 2.5rem;
+}
+
+/* Add these styles to your existing student_report.css */
+
+.grade-selection {
+  margin-bottom: 2rem;
+  background: var(--white);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.grade-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 300px;
+}
+
+.grade-input label {
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.grade-dropdown {
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(0, 59, 92, 0.1);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--text-primary);
+  background: var(--white);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23003b5c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1em;
+  padding-right: 2.5rem;
+}
+
+.grade-dropdown:hover {
+  border-color: var(--secondary);
+}
+
+.grade-dropdown:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(0, 164, 189, 0.1);
+}
+
+.grade-dropdown option {
+  padding: 0.75rem;
+  color: var(--text-primary);
+}
+
+/* Add hover effect for options */
+.grade-dropdown option:hover {
+  background-color: var(--secondary);
+  color: var(--white);
+}
+
+/* Style for selected option */
+.grade-dropdown option:checked {
+  background-color: var(--secondary);
+  color: var(--white);
 }

@@ -81,6 +81,23 @@
 
     <!-- Add new Prediction Section -->
     <div class="prediction-section">
+      <div class="grade-selection">
+        <div class="grade-input">
+          <label for="previousGrade">Previous Term Grade</label>
+          <select id="previousGrade" class="grade-dropdown" required>
+            <option value="" disabled selected>Select Grade</option>
+            <option value="A+">A+</option>
+            <option value="A">A</option>
+            <option value="B+">B+</option>
+            <option value="B">B</option>
+            <option value="C+">C+</option>
+            <option value="C">C</option>
+            <option value="D+">D+</option>
+            <option value="D">D</option>
+          </select>
+        </div>
+      </div>
+
       <button id="predictButton" class="predict-btn">
         <i class='bx bx-line-chart'></i>
         Predict Future Performance

@@ -116,22 +116,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const downloadChartBtn = document.getElementById('downloadChart');
 
     predictButton.addEventListener('click', async function() {
-        const studentId = document.querySelector('.student-id').textContent.replace('ID: ', '');
+        const studentId = document.querySelector('input[name="student_id"]').value;
+        const previousGrade = document.getElementById('previousGrade').value;
+        
+        if (!previousGrade) {
+            alert('Please select a previous grade first');
+            return;
+        }
+
         try {
-            const response = await fetch(`/predict-performance/${studentId}/`);
+            console.log('Sending prediction request for student:', studentId, 'with grade:', previousGrade);
+            
+            const response = await fetch(`/predict-performance/${studentId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    previous_grade: previousGrade
+                })
+            });
+
+            console.log('Response status:', response.status);
             const data = await response.json();
+            console.log('Response data:', data);
 
             if (response.ok) {
                 updatePredictionUI(data);
-                predictionResult.classList.remove('hidden');
-                predictionResult.classList.add('slide-in');
+            } else {
+                throw new Error(data.error || 'Failed to get prediction');
             }
         } catch (error) {
             console.error('Error:', error);
+            alert('Failed to get prediction: ' + error.message);
         }
     });
 
     function updatePredictionUI(data) {
+        // Show the prediction result container
+        const predictionResult = document.getElementById('predictionResult');
+        predictionResult.classList.remove('hidden');
+        predictionResult.classList.add('slide-in');
+
         // Update grade and confidence
         document.getElementById('predictedGrade').textContent = data.predicted_grade;
         document.getElementById('confidenceScore').textContent = `${data.confidence}%`;
@@ -160,6 +187,9 @@ document.addEventListener('DOMContentLoaded', function() {
             'C': 'var(--accent)'
         };
         gradeBadge.style.background = gradeColors[data.predicted_grade] || 'var(--primary)';
+
+        // Log the data for debugging
+        console.log('Prediction data:', data);
     }
 
     // Close prediction result
@@ -178,4 +208,20 @@ document.addEventListener('DOMContentLoaded', function() {
         downloadLink.click();
         document.body.removeChild(downloadLink);
     });
+
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 }); 
