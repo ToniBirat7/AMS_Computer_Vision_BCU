@@ -141,8 +141,6 @@ class CourseForm(forms.ModelForm):
     
     def clean_duration(self):
         duration = self.cleaned_data.get('duration')
-        if not duration.isdigit():
-            raise forms.ValidationError('Duration should be a number')
         if int(duration) < 0:
             raise forms.ValidationError('Duration should be a positive number')
         return duration

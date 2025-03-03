@@ -214,7 +214,6 @@ def list_students(request):
 @login_required
 def list_teachers(request):
     teachers = Teacher.objects.all()
-    print(teachers[0].image.url)
     return render(request, 'auth/list_teachers.html', {'teachers': teachers})
 
 @login_required
