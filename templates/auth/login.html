@@ -66,8 +66,17 @@
                     <p>Access your AMS account</p>
                 </div>
 
+<<<<<<< HEAD
                 <form method="POST" id="loginForm" class="login-form">
                     {% csrf_token %}
+=======
+                <div class="input-field">
+                    <!-- Add form field for password here -->
+                    {{ form.password }}
+                    <i class='bx bx-lock-alt'></i>
+                    <!-- Add logic for displaying password errors here -->
+                    {{ form.password.errors }}
+>>>>>>> 398feda (Final Commit)
 
                     <div class="form-group">
                         <div class="input-field">

@@ -19,27 +19,26 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib import messages
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from django.db.models import Count, Q
-from django.db.models.functions import TruncMonth
+from .forms import LoginForm, UserRegistrationForm, TeacherForm, StudentForm, CourseForm, StudentClassForm
+from .models import Teacher, Student, Course, StudentClass
 
-# Local Imports
-from .forms import ( 
-    UserRegistrationForm, 
-    TeacherForm, 
-    StudentForm, 
-    CourseForm, 
-    StudentClassForm
-)
-from .models import (
-    Teacher,
-    Student, 
-    Course, 
-    StudentClass, 
-    Attendance
-)
+# Create your views here.
+# def login_page(request):
+#     if request.method == 'POST':
+#         print(request.POST)
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+#         print("*******")
+#         print(username,password)
+#         user = authenticate(username=username, password=password)
+#         print(user)
+#         if user is None:
+#             messages.warning(request, 'Invalid Username or Password')
+#             messages.warning(request, 'Please try again')
+#         else: 
+#             login(request, user)
+
+#     return render(request, 'auth/login.html')
 
 def login_page(request):
     next = request.GET.get('next')

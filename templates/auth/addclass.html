@@ -43,6 +43,7 @@
     </div>
   </div>
 
+<<<<<<< HEAD
   <div class="form-section animate__animated animate__fadeInRight">
     <div class="form-header">
       <h1>Assign Class</h1>
@@ -117,11 +118,66 @@
   </div>
   {% endfor %}
   {% endif %}
+=======
+  {% if messages %}
+
+  {% for message in messages %}
+  <div class="toast" id="toast{{ forloop.counter }}">
+    <div class="toast-content">
+      <i class="fas fa-solid fa-check check"></i>
+      <div class="message">
+        <!-- <span class="text text-1">Success!</span> -->
+        <span class="text text-2">{{message}}</span>
+      </div>
+    </div>
+    <!-- <i class="fa-solid fa-xmark close"></i> -->
+    <i class="fas fa-times close" id="close{{ forloop.counter }}"></i>
+    <div class="progress"></div>
+  </div>
+  {%endfor%}
+
+  <script>
+    {% for message in messages %}
+    var toast{{ forloop.counter }} = document.getElementById('toast{{ forloop.counter }}');
+    var close{{ forloop.counter }} = document.getElementById('close{{ forloop.counter }}');
+  
+  close{ { forloop.counter } }.addEventListener('click', function () {
+      removeToast(toast{{ forloop.counter }});
+  });
+
+    setTimeout(function () {
+      removeToast(toast{{ forloop.counter }});
+  }, 3000);
+    {% endfor %}
+
+    function removeToast(el) {
+      el.style.opacity = '0';
+      el.style.height = '0';
+      el.style.margin = '0';
+      el.style.padding = '0';
+      setTimeout(function () {
+        el.remove();
+      }, 500); // delay should match the transition duration
+    }
+  </script>
+>>>>>>> 398feda (Final Commit)
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<<<<<<< HEAD
 <script src="{% static 'admin/class_registration.js' %}"></script>
+=======
+
+<script>
+  $(document).ready(function () {
+    $('.select2-multiple').select2({
+      placeholder: 'Click or Search'  // Change this to your desired placeholder text
+    });
+  });   
+</script>
+
+>>>>>>> 398feda (Final Commit)
 {% endblock %}
