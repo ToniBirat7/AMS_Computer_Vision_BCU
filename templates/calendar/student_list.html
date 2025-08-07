@@ -1,0 +1,86 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block link %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+<link rel="stylesheet" href="{% static 'student_list.css' %}">
+{% endblock %}
+{% block title %}
+<title>Student List</title>
+{% endblock %}
+
+{% block body %}
+<div class="main">
+    <h1 class="h1">DWIT Course Attendance
+        <!-- DTL: Displaying today's date (day, month, year) dynamically -->
+        <span class="h1-span">{{today_date.day}} {{month_name}} {{today_date.year}}</span> <!-- Example date -->
+    </h1>
+    <div class="stu-table">
+        <table>
+            <thead>
+                <tr>
+                    <th class="name-col-1">Student Name</th>
+                    {% for date in past_date %}
+                    <th class="date-col">{{date.day}}</th>
+                    {% endfor %}
+                    <th class="missed-col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- DTL: Start of form tag with POST method and CSRF token -->
+                <form method="POST">
+                    <!-- DTL: csrf_token was here -->
+                    {% csrf_token %}
+                    {% for item in students %}
+                    <tr>
+                        <td class="name-col">{{ item.student.name }}</td> <!-- DTL: student.student.name -->
+                        <!-- DTL: Loop through attendance report to display attendance statuses -->
+                        {% for date in past_date %}
+                        <td class="status-col">{{ status_dict|get_id:item.student.id|get_status:date.day }}</td>
+                        {% endfor %}
+                        <td class="attend-col">
+                            <div class="input-box">
+                                <!-- DTL: Display dynamic form select options for attendance (Present/Absent) -->
+                                <select name="{{item.student.id}}" class="custom-class" required id="id_sex">
+                                    <option value="A" selected>Absent</option>
+                                    <option value="P">Present</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <!-- DTL: End of looping through students and attendance data -->
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <button type="submit" class="primary">Submit</button>
+    </div>
+    </form>
+</div>
+
+<script>
+    /* JavaScript for managing toast notifications */
+    var toast1 = document.getElementById('toast1');
+    var close1 = document.getElementById('close1');
+
+    close1.addEventListener('click', function () {
+        removeToast(toast1);
+    });
+
+    setTimeout(function () {
+        removeToast(toast1);
+    }, 3000);
+
+    function removeToast(el) {
+        el.style.opacity = '0';
+        el.style.height = '0';
+        el.style.margin = '0';
+        el.style.padding = '0';
+        setTimeout(function () {
+            el.remove();
+        }, 500); // delay should match the transition duration
+    }
+</script>
+{% endblock %}

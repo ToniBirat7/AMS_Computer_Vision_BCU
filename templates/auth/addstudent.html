@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'auth/admin.html' %}
 
 {% load static %}
@@ -239,4 +240,101 @@
 
 {% block extra_js %}
 <script src="{% static 'admin/student_registration.js' %}"></script>
+=======
+{% extends 'auth/admin.html' %}
+
+{% load static %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'admin/user_reg.css' %}" />
+{% endblock %}
+
+{% block body %}
+
+<div class="body">
+  <div class="containers">
+    <div class="title">Student Details</div>
+    <div class="content">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="user-details">
+          <div class="input-box">
+            <span class="details">Name</span>
+            <!-- <input type="text" placeholder="Enter Student Name" required name="name"> -->
+            {{ form.name }}
+            {{ form.name.errors }}
+          </div>
+          <div class="input-box">
+            <span class="details">Address</span>
+            <!-- <input type="text" placeholder="Enter Student Address" required name="address"> -->
+            {{ form.address }}
+            {{ form.address.errors }}
+          </div>
+          <div class="input-box">
+            <span class="details">Age</span>
+            <!-- <input type="text" placeholder="Enter Student Age" required name="age" maxlength="2" minlength="1"> -->
+            {{ form.age }}
+            {{ form.age.errors }}
+          </div>
+          <div class="input-box">
+            <span class="details">Phone Number</span>
+            <!-- <input type="text" placeholder="Enter Student Phone Number" required name="phone_number" maxlength="10" minlength="10"> -->
+            {{ form.phone_number }}
+            {{ form.phone_number.errors }}
+          </div>
+        </div>
+        <div class="button">
+          <input type="submit" value="Submit">
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Message  -->
+  {% if messages %}
+
+  {% for message in messages %}
+  <div class="toast" id="toast{{ forloop.counter }}">
+    <div class="toast-content">
+      <i class="fas fa-solid fa-check check"></i>
+      <div class="message">
+        <!-- <span class="text text-1">Success!</span> -->
+        <span class="text text-2">{{message}}</span>
+      </div>
+    </div>
+    <!-- <i class="fa-solid fa-xmark close"></i> -->
+    <i class="fas fa-times close" id="close{{ forloop.counter }}"></i>
+    <div class="progress"></div>
+  </div>
+  {%endfor%}
+
+  <script>
+    {% for message in messages %}
+    var toast{{ forloop.counter }} = document.getElementById('toast{{ forloop.counter }}');
+    var close{{ forloop.counter }} = document.getElementById('close{{ forloop.counter }}');
+    
+    close{ { forloop.counter } }.addEventListener('click', function () {
+      removeToast(toast{{ forloop.counter }});
+    });
+
+    setTimeout(function () {
+      removeToast(toast{{ forloop.counter }});
+    }, 3000);
+    {% endfor %}
+
+    function removeToast(el) {
+      el.style.opacity = '0';
+      el.style.height = '0';
+      el.style.margin = '0';
+      el.style.padding = '0';
+      setTimeout(function () {
+        el.remove();
+      }, 500); // delay should match the transition duration
+    }
+  </script>
+
+  {% endif %}
+
+</div>
+>>>>>>> ba89ca1 (docs: fix contribution)
 {% endblock %}

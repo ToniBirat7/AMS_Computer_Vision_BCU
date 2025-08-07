@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -125,4 +126,97 @@
     <script src="{% static 'js/login.js' %}"></script>
 </body>
 
+=======
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Link to a static CSS file (update with actual static path) -->
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <title>AMS | Login</title>
+</head>
+
+<body>
+
+    <!-- Display messages if there are any (messages to be dynamically filled) -->
+    <!-- Add logic for displaying messages here -->
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert">
+        <h1>{{ message }}</h1>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if form.non_field_errors %}
+    <div class="error">
+        {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="box">
+        <div class="container">
+            <div class="top">
+                <header>Login</header>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <!-- Add CSRF token here -->
+
+                <div class="input-field">
+                    <!-- Add form field for username here -->
+                    {{ form.username }}
+                    <i class='bx bx-user'></i>
+                    {{ form.username.errors }}
+                </div>
+
+                <div class="input-field">
+                    <!-- Add form field for password here -->
+                    {{ form.password }}
+                    <i class='bx bx-lock-alt'></i>
+                    <!-- Add logic for displaying password errors here -->
+                    {{ form.password.errors }}
+
+                </div>
+
+                <div class="input-field">
+                    <input type="submit" class="submit" value="Login" id="">
+                </div>
+            </form>
+
+            <div class="two-col">
+                <div class="one">
+                    <input type="checkbox" name="" id="check">
+                    <label for="check"> Remember Me</label>
+                </div>
+                <div class="two">
+                    <label><a href="#">Forgot password?</a></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="circles">
+        <!-- Link to static images for the logo (update with actual static paths) -->
+        <li><img class="logos" src="{% static 'images/deerwalklogo.png' %}" alt=""></li>
+        <li><img class="logos" src="{% static 'images/deerwalklogo.png' %}" alt=""></li>
+        <li><img class="logos" src="{% static 'images/deerwalklogo.png' %}" alt=""></li>
+        <li><img class="logos" src="{% static 'images/deerwalklogo.png' %}" alt=""></li>
+        <li><img class="logos" src="{% static 'images/deerwalklogo.png' %}" alt=""></li>
+    </ul>
+</body>
+
+>>>>>>> ba89ca1 (docs: fix contribution)
 </html>

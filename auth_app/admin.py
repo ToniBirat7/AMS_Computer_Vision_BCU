@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.contrib import admin
 from .models import Teacher, Student, Course, StudentClass, Attendance
 
@@ -26,3 +27,25 @@ class StudentClassAdmin(admin.ModelAdmin):
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
     list_display = ['today_date','student','course','stats']
+=======
+from django.contrib import admin
+from .models import Teacher, Student, Course
+
+@admin.register(Teacher)
+class TeacherAdmin(admin.ModelAdmin):
+    list_display = ['user','address','primary_number','secondary_number','sex']
+
+
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ['name','address','phone_number','age']
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = [
+        'teacher',
+        'duration',
+        'shift',
+        'title'
+    ]
+>>>>>>> ba89ca1 (docs: fix contribution)

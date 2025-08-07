@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 env/
 db.sqlite3
 AMS_Practice/
@@ -9,3 +10,8 @@ Face_Data_Cropped/
 Face_Data_Cropped_Hridesh/
 hridesh_img/
 media_files/*
+=======
+env/
+db.sqlite3
+AMS_Practice/
+>>>>>>> ba89ca1 (docs: fix contribution)

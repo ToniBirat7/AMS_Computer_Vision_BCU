@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,4 +53,40 @@
   <script src="{% static 'teacher/nav.js' %}"></script>
 </body>
 
+=======
+<!doctype html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Block for additional links (CSS files, etc.) to be added here later -->
+  <!-- Block link -->
+
+  {% block link %}
+
+  {% endblock %}
+  <!-- Link to a static CSS file (update with actual static path) -->
+  <link rel="stylesheet" href="{% static 'nav.css' %}">
+
+  <!-- Block for the title to be dynamically filled -->
+  <!-- Block Title -->
+  {% block title %}
+
+  {% endblock %}
+</head>
+
+<body>
+  {% include 'core/nav.html' %}
+
+  {% block body %}
+
+  {% endblock %}
+
+</body>
+
+>>>>>>> ba89ca1 (docs: fix contribution)
 </html>

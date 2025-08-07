@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!-- Load static files (will be used to load static images, CSS, JS) -->
 
 {% load static %}
@@ -42,4 +43,23 @@
       <span></span>
     </button>
   </div>
+=======
+<!-- Load static files (will be used to load static images, CSS, JS) -->
+
+{% load static %}
+
+<nav>
+  <div class="left-section">
+    <!-- Static image source for the logo -->
+    <img src="{% static 'images/deerwalklogo.png' %}" alt="Logo" class="logo-image">
+    <!-- Link to the home page (url to be filled in later) -->
+    <a href="{% url 'course-list' %}" class="course nav-link">Home</a>
+    <!-- Link to the profile page (url to be filled in later) -->
+    <a href="{% url 'profile' %}" class="profiles nav-link">Profile</a>
+  </div>
+  <div class="right-section">
+    <!-- Link to the logout page (url to be filled in later) -->
+    <a href="{% url 'logout' %}" class="sign-out nav-link">Log Out</a>
+  </div>
+>>>>>>> ba89ca1 (docs: fix contribution)
 </nav>

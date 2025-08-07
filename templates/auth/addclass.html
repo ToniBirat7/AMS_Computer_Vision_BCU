@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'auth/admin.html' %}
 
 {% load static %}
@@ -180,4 +181,98 @@
 </script>
 
 >>>>>>> 398feda (Final Commit)
+=======
+{% extends 'auth/admin.html' %}
+
+{% load static %}
+
+{% block links %}
+
+<link rel="stylesheet" href="{% static 'admin/user_reg.css' %}" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
+{% endblock %}
+
+{% block body %}
+
+<div class="body">
+  <div class="containers">
+    <div class="title">Student Class Details</div>
+    <div class="content">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="user-details">
+          <div class="input-box">
+            <span class="details">Choose Students</span>
+            {{ form.student }}
+          </div>
+          <div class="input-box">
+            <!-- <label for="teacher">Teacher</label> -->
+            <span class="details">Choose Course</span>
+            {{ form.course }}
+          </div>
+        </div>
+        <div class="button">
+          <input type="submit" value="Submit">
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {% if messages %}
+
+  {% for message in messages %}
+  <div class="toast" id="toast{{ forloop.counter }}">
+    <div class="toast-content">
+      <i class="fas fa-solid fa-check check"></i>
+      <div class="message">
+        <!-- <span class="text text-1">Success!</span> -->
+        <span class="text text-2">{{message}}</span>
+      </div>
+    </div>
+    <!-- <i class="fa-solid fa-xmark close"></i> -->
+    <i class="fas fa-times close" id="close{{ forloop.counter }}"></i>
+    <div class="progress"></div>
+  </div>
+  {%endfor%}
+
+  <script>
+    {% for message in messages %}
+    var toast{{ forloop.counter }} = document.getElementById('toast{{ forloop.counter }}');
+    var close{{ forloop.counter }} = document.getElementById('close{{ forloop.counter }}');
+  
+  close{ { forloop.counter } }.addEventListener('click', function () {
+      removeToast(toast{{ forloop.counter }});
+  });
+
+    setTimeout(function () {
+      removeToast(toast{{ forloop.counter }});
+  }, 3000);
+    {% endfor %}
+
+    function removeToast(el) {
+      el.style.opacity = '0';
+      el.style.height = '0';
+      el.style.margin = '0';
+      el.style.padding = '0';
+      setTimeout(function () {
+        el.remove();
+      }, 500); // delay should match the transition duration
+    }
+  </script>
+</div>
+{% endif %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $('.select2-multiple').select2({
+      placeholder: 'Click or Search'  // Change this to your desired placeholder text
+    });
+  });   
+</script>
+
+>>>>>>> ba89ca1 (docs: fix contribution)
 {% endblock %}
