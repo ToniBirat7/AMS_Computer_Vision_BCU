@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 """
 URL configuration for AMS project.
 
@@ -31,6 +32,8 @@ urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 =======
+=======
+>>>>>>> 0d19833 (fix: contribution fix)
 """
 URL configuration for AMS project.
 
@@ -58,5 +61,12 @@ urlpatterns = [
     path('teacher/', include('teacher_app.urls')),
 ]
 
+<<<<<<< HEAD
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 >>>>>>> ba89ca1 (docs: fix contribution)
+=======
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+>>>>>>> 0d19833 (fix: contribution fix)

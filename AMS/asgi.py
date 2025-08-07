@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 """
 ASGI config for AMS project.
 
@@ -39,6 +40,8 @@ application = ProtocolTypeRouter({
     ),
 })
 =======
+=======
+>>>>>>> 0d19833 (fix: contribution fix)
 """
 ASGI config for AMS project.
 
@@ -49,6 +52,7 @@ https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/
 """
 
 import os
+<<<<<<< HEAD
 
 from django.core.asgi import get_asgi_application
 
@@ -56,3 +60,34 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AMS.settings')
 
 application = get_asgi_application()
 >>>>>>> ba89ca1 (docs: fix contribution)
+=======
+import django
+from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from channels.security.websocket import AllowedHostsOriginValidator
+
+# Set the Django settings module
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AMS.settings')
+
+# Initialize Django
+django.setup()
+
+# Import after django.setup()
+from auth_app.routing import websocket_urlpatterns
+
+# Initialize Django ASGI application early to ensure the AppRegistry
+# is populated before importing code that may import ORM models.
+django_asgi_app = get_asgi_application()
+
+application = ProtocolTypeRouter({
+    "http": django_asgi_app,
+    "websocket": AllowedHostsOriginValidator(
+        AuthMiddlewareStack(
+            URLRouter(
+                websocket_urlpatterns
+            )
+        )
+    ),
+})
+>>>>>>> 0d19833 (fix: contribution fix)

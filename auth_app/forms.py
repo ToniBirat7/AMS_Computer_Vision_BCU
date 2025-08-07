@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from django import forms
 import re
 from django.contrib.auth.models import User
@@ -147,6 +148,8 @@ class StudentClassForm(forms.Form):
 
 
 =======
+=======
+>>>>>>> 0d19833 (fix: contribution fix)
 from django import forms
 import re
 from django.contrib.auth.models import User
@@ -155,6 +158,21 @@ from .models import Student, Teacher, Course
 class LoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class' : 'input', 'maxlength' : '100', 'placeholder' : 'Enter Username'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class' : 'input', 'maxlength' : '100', 'placeholder' : 'Enter Password'}))
+<<<<<<< HEAD
+=======
+
+    # def clean_username(self):
+    #     uname = self.cleaned_data.get('username')
+    #     if len(uname) <= 5 and ' ' in uname:
+    #         raise forms.ValidationError('Username must be more than 5 characters and should not contain spaces')
+    #     return uname
+    
+    # def clean_password(self):
+    #     pwd = self.cleaned_data.get('password')
+    #     if '$' not in pwd:
+    #         raise forms.ValidationError('Password Must Contain $')
+    #     return pwd
+>>>>>>> 0d19833 (fix: contribution fix)
     
 class UserRegistrationForm(forms.Form):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder' : 'Enter First Name'}))
@@ -181,6 +199,18 @@ class UserRegistrationForm(forms.Form):
         if len(uname) <= 5 and ' ' in uname:
             raise forms.ValidationError('Username must be more than 5 characters')
         return uname
+<<<<<<< HEAD
+=======
+    
+    def clean_password2(self):
+        pswd1 = self.cleaned_data.get('password1')
+        pswd2 = self.cleaned_data.get('password2')
+        
+        if  pswd1 != pswd2:
+            raise forms.ValidationError('The Passwords do not match')
+        
+        return pswd2
+>>>>>>> 0d19833 (fix: contribution fix)
 
     def clean_password1(self):
         pwd1 = self.cleaned_data.get('password1')
@@ -199,11 +229,14 @@ class UserRegistrationForm(forms.Form):
     
     def clean(self):
         data = super().clean()
+<<<<<<< HEAD
         pswd1 = data.get('password1')
         pswd2 = data.get('password2')
 
         if  pswd1 != pswd2:
             raise forms.ValidationError('The Passwords do not match')
+=======
+>>>>>>> 0d19833 (fix: contribution fix)
         
         return data 
 
@@ -244,11 +277,19 @@ class StudentForm(forms.ModelForm):
             'phone_number' : forms.TextInput(attrs={'placeholder' : 'Enter Phone Number','class' : 'input-box'})
         }
 
+<<<<<<< HEAD
     def clean_name(self):
         name = self.cleaned_data.get('name')
         if not name.isalpha():
             raise forms.ValidationError('First Name should contain only alphabets')
         return name
+=======
+    # def clean_name(self):
+    #     name = self.cleaned_data.get('name')
+    #     if not name.isalpha():
+    #         raise forms.ValidationError('First Name should contain only alphabets')
+    #     return name
+>>>>>>> 0d19833 (fix: contribution fix)
     
     def clean_address(self):
         address = self.cleaned_data.get('address')
@@ -274,8 +315,11 @@ class CourseForm(forms.ModelForm):
     
     def clean_duration(self):
         duration = self.cleaned_data.get('duration')
+<<<<<<< HEAD
         if not duration.isdigit():
             raise forms.ValidationError('Duration should be a number')
+=======
+>>>>>>> 0d19833 (fix: contribution fix)
         if int(duration) < 0:
             raise forms.ValidationError('Duration should be a positive number')
         return duration
@@ -292,4 +336,7 @@ class StudentClassForm(forms.Form):
     )
 
 
+<<<<<<< HEAD
 >>>>>>> ba89ca1 (docs: fix contribution)
+=======
+>>>>>>> 0d19833 (fix: contribution fix)

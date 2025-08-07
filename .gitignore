@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 env/
 db.sqlite3
 AMS_Practice/
@@ -15,3 +16,16 @@ env/
 db.sqlite3
 AMS_Practice/
 >>>>>>> ba89ca1 (docs: fix contribution)
+=======
+env/
+db.sqlite3
+AMS_Practice/
+__pycache__/
+*.py[cod]
+*$py.class
+media/
+Face_Data_Cropped/
+Face_Data_Cropped_Hridesh/
+hridesh_img/
+media_files/*
+>>>>>>> 0d19833 (fix: contribution fix)

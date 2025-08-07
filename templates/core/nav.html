@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <!-- Load static files (will be used to load static images, CSS, JS) -->
 
 {% load static %}
@@ -62,4 +63,50 @@
     <a href="{% url 'logout' %}" class="sign-out nav-link">Log Out</a>
   </div>
 >>>>>>> ba89ca1 (docs: fix contribution)
+=======
+<!-- Load static files (will be used to load static images, CSS, JS) -->
+
+{% load static %}
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <img src="{% static 'images/islington_logo.png' %}" alt="Logo" class="logo-image">
+      <div class="brand-text">
+        <span>I</span>
+        <span>S</span>
+        <span>L</span>
+        <span>I</span>
+        <span>N</span>
+        <span>G</span>
+        <span>T</span>
+        <span>O</span>
+        <span>N</span>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <a href="{% url 'course-list' %}"
+        class="nav-link {% if request.resolver_match.url_name == 'course-list' %}active{% endif %}">
+        <i class='bx bx-home'></i>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="{% url 'profile' %}" class="nav-link">
+        <i class='bx bx-user'></i>
+        <span>Profile</span>
+      </a>
+
+      <a href="{% url 'logout' %}" class="nav-link logout">
+        <i class='bx bx-log-out'></i>
+        <span>Logout</span>
+      </a>
+    </div>
+
+    <button class="mobile-menu-btn">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+>>>>>>> 0d19833 (fix: contribution fix)
 </nav>
